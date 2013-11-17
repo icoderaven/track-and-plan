@@ -1,0 +1,149 @@
+# Build tools are cool!
+# Mac Mason <mac@cs.duke.edu>
+# Provided under the terms of the included LICENSE.txt.
+# http://www.cs.duke.edu/~parr/textured-localization
+
+import os
+import os.path
+import sys
+
+Import('env_with_deps')
+# Should cover Linux and MacPorts.
+# If only boost had pkg-config support, this would be WAY easier.
+possible_cpppaths = ["/opt/local/include/",
+                     "/usr/local/include"]
+cpppaths = filter(os.path.exists, possible_cpppaths)
+
+possible_libpaths = ["/opt/local/lib"] 
+libpaths = filter(os.path.exists, possible_libpaths)
+
+# OpenCV is bad about the last one.
+warnings = ["-Wall", "-Wno-write-strings"] #, "-Werror"]
+opt = ["-O3"]
+debug = ['-g']
+extra = ["-DNDEBUG"]
+if sys.platform != 'darwin':
+  extra.append("-std=c++0x")
+
+E = Environment(ENV = os.environ,
+                CPPPATH = cpppaths,
+                LIBPATH = libpaths + ['.'],
+                CCFLAGS = warnings + opt + debug + extra,
+                CONFIGURELOG = "config.log")
+
+E.ParseConfig('pkg-config --cflags --libs opencv')
+
+cxx_header_deps = ['boost/algorithm/string.hpp',
+                   'boost/utility.hpp',
+                   'boost/foreach.hpp',
+                   'boost/format.hpp',
+                   'boost/filesystem.hpp',
+                   'boost/filesystem/fstream.hpp']
+lib_deps = ['m', 'boost_system-mt', 'boost_filesystem-mt']
+E = env_with_deps(cxx_header_deps, lib_deps, E)
+
+# We need some extra stuff for OpenGL.
+cxx_header_deps_gl = ['GL/gl.h', 'GL/glu.h']
+lib_deps_gl = ['GL', 'GLU', 'glut']
+E_GL = env_with_deps(cxx_header_deps_gl, lib_deps_gl, E)
+if sys.platform == 'darwin':
+  E_GL.Append(FRAMEWORKS = ['OpenGL'])
+
+# Object files.
+utilities = E.Object('utilities.cc')
+pose      = [E.Object('pose.cc'), utilities]
+linear    = E.Object('linear.cc')
+bayer     = E.Object('bayer.cc')
+pgm       = E.Object('pgm.cc')
+barecell  = E.Object('barecell.cc')
+kvparser  = E.Object('kvparser.cc')
+random    = E.Object('random.cc')
+particle  = E.Object('particle.cc')
+particle_visualizer = [E.Object('particle_visualizer.cc'), particle]
+colorspaces = E.Object('colorspaces.cc')
+sensormodel = E.Object('sensormodel.cc')
+motionmodel = E.Object('motionmodel.cc')
+simplemotionmodel = E.Object('simplemotionmodel.cc')
+austinmotionmodel = E.Object('austinmotionmodel.cc')
+motionmodels = [motionmodel, simplemotionmodel, austinmotionmodel]
+sparsemap  = E.Object('sparsemap.cc')
+viewcontext = E_GL.Object('viewcontext.cc')
+
+# Things that we need to install.
+installables = []
+# Normal programs.
+installables.append(E.Program(["linearize.cc", linear]))
+installables.append(E.Program(["bit_variance.cc", bayer]))
+installables.append(E.Program(["log_to_movie.cc"]))
+installables.append(E.Program(["bayerize.cc", bayer]))
+installables.append(E.Program(["matrix_examiner.cc"]))
+installables.append(E.Program(["perturb_trajectory.cc", 
+                               kvparser, 
+                               pose,
+                               random,
+                               motionmodels]))
+installables.append(E.Program(["extract_trajectory.cc", pose]))
+installables.append(E.Program(["differ.cc"]))
+installables.append(E.Program(["sorted_viewer.cc", pose]))
+installables.append(E.Program(["l2shower.cc", pose]))
+installables.append(E.Program(["viewmapslices.cc"]))
+installables.append(E.Program(["add_trajectory_to_map.cc",
+                               pose, barecell, particle_visualizer]))
+
+# OpenGL-aware programs, plus a helper list.
+if sys.platform != 'darwin':
+  sensormodels = [E_GL.Object('sensormodels.cc'), colorspaces, sensormodel]
+  gl_dependencies = [barecell, 
+                     viewcontext, 
+                     kvparser, 
+                     pose, 
+                     sparsemap]
+  pf_dependencies = [random, 
+                     particle_visualizer, 
+                     motionmodels,
+                     sensormodels]
+  installables.append(E_GL.Program(["viewer.cc", gl_dependencies]))
+  installables.append(E_GL.Program(["heatmap.cc", gl_dependencies,
+                                    pf_dependencies]))
+  installables.append(E_GL.Program(["heatmap_rotation.cc", gl_dependencies,
+                                    pf_dependencies]))
+  installables.append(E_GL.Program(["manual_trajectory.cc", 
+                                    gl_dependencies, pf_dependencies]))
+  installables.append(E_GL.Program(["reference_cost.cc", gl_dependencies,
+                                    pf_dependencies, linear]))
+  installables.append(E_GL.Program(["follow_trajectory.cc", gl_dependencies]))
+  installables.append(E_GL.Program(["simulated_robot_tracking.cc", 
+                                    gl_dependencies,
+                                    pf_dependencies]))
+  installables.append(E_GL.Program(["localization.cc", 
+                                    gl_dependencies,
+                                    pf_dependencies,
+                                    linear]))
+  installables.append(E_GL.Program(["find_one.cc", 
+                                    gl_dependencies,
+                                    pf_dependencies]))
+  installables.append(E_GL.Program(["coster.cc", sensormodels]))
+  installables.append(E_GL.Program(["color_conversion_test.cc",
+                                    sensormodels, kvparser]))
+
+# Python programs & modules.
+installables.append(E.File(["log.py"]))
+installables.append(E.File(["undistort_images.py"]))
+installables.append(E.File(["decimate_trajectory.py"]))
+installables.append(E.File(["rectify_riegl.py"]))
+installables.append(E.File(["magnitude.py"]))
+installables.append(E.File(["naive_color_calibrator.py"]))
+installables.append(E.File(["camera_permuter.py"]))
+installables.append(E.File(["weight_sorter.py"]))
+installables.append(E.File(["truncate_dwing.py"]))
+installables.append(E.File(["truncate_lab.py"]))
+
+# Install everything.
+Default(E.Install("../bin", installables))
+
+# Finally, ctags is super handy.
+tags = E.Command('tags',
+                 Glob('*.hh') + Glob('*.cc'),
+                 'ctags -R --c++-kinds=+lp --fields=+ias --extra=+q ' +\
+                 '--tag-relative=yes -f src/tags src/')
+Default(tags)
