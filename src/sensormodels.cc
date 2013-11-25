@@ -82,8 +82,8 @@ double L2SensorModel::operator()(IplImage* reference, IplImage* reading) {
 
 		std::vector<cv::KeyPoint> keypoints_1, keypoints_2;
 		cv::Mat ref_gray, ref_read;
-		cv::cvtColor(reference, ref_gray, CV_BGR2GRAY, 0);
-		cv::cvtColor(reading, ref_read, CV_BGR2GRAY, 0);
+		cv::cvtColor(cv::Mat(reference), ref_gray, CV_BGR2GRAY);
+		cv::cvtColor(cv::Mat(reading), ref_read, CV_BGR2GRAY);
 
 		detector.detect(ref_gray, keypoints_1);
 		detector.detect(ref_read, keypoints_2);
@@ -371,8 +371,8 @@ double NormalizedL2SensorModel::operator()(IplImage* reference,
 }
 
 PerChannelNormalizedL2SensorModel::PerChannelNormalizedL2SensorModel(
-		double multiplier) :
-		_l2(multiplier, false) {
+		double multiplier, bool use_features ) :
+		_l2(multiplier, false, use_features) {
 }
 
 double PerChannelNormalizedL2SensorModel::operator()(IplImage* reference,

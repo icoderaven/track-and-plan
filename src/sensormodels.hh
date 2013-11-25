@@ -227,7 +227,7 @@ class PerChannelNormalizedL2SensorModel: public SensorModel {
 private:
 	L2SensorModel _l2;
 public:
-	PerChannelNormalizedL2SensorModel(double multiplier);
+	PerChannelNormalizedL2SensorModel(double multiplier, bool use_features=false);
 	double operator()(IplImage* reference, IplImage* reading);
 };
 }
