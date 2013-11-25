@@ -99,8 +99,6 @@ C	viewmapslices.cc	/^  vector<Cube> C;$/;"	l
 CAMERA_INDEX	localization.cc	/^    int CAMERA_INDEX = atoi(argv[5]);$/;"	l
 CCenter	austinmotionmodel.cc	/^  double CCenter = (distance * _meanC_D) + $/;"	l
 CUTOFF	viewcontext.cc	324;"	d	file:
-CV_BGR2GRAY	sensormodels.cc	/^		cv::cvtColor(cv::Mat(reading), ref_read, CV_BGR2GRAY);$/;"	l
-CV_BGR2GRAY	sensormodels.cc	/^		cv::cvtColor(cv::Mat(reference), ref_gray, CV_BGR2GRAY);$/;"	l
 CalculateNeff	localization.cc	/^double CalculateNeff(const vector<Particle>& filter)$/;"	f
 Camera	viewcontext.cc	/^Array2D<double> ViewContext::Camera() const$/;"	f	class:textured_localization::ViewContext
 Camera	viewcontext.hh	/^      Array2D<double> Camera() const;  \/\/ The other transformation matrix.$/;"	p	class:textured_localization::ViewContext	access:public
@@ -504,8 +502,6 @@ MFILE	add_trajectory_to_map.cc	/^const bool MFILE = true;$/;"	v
 MM	localization.cc	/^    AustinMotionModel MM(config);$/;"	p	file:
 MM	perturb_trajectory.cc	/^    AustinMotionModel MM(config);$/;"	p	file:
 MM	simulated_robot_tracking.cc	/^    AustinMotionModel MM(config);$/;"	p	file:
-Mat	sensormodels.cc	/^		cv::cvtColor(cv::Mat(reading), ref_read, CV_BGR2GRAY);$/;"	p	class:textured_localization::cv	file:
-Mat	sensormodels.cc	/^		cv::cvtColor(cv::Mat(reference), ref_gray, CV_BGR2GRAY);$/;"	p	class:textured_localization::cv	file:
 MatchMean	sensormodels.cc	/^IplImage* GrayScaleL2SensorModel::MatchMean(IplImage* target, IplImage* im,$/;"	f	class:textured_localization::GrayScaleL2SensorModel
 MatchMean	sensormodels.hh	/^	IplImage* MatchMean(IplImage* target, IplImage* im, bool del = true);$/;"	p	class:textured_localization::GrayScaleL2SensorModel	access:public
 Matrix	TNT/tnt_cmat.h	/^    Matrix() : m_(0), n_(0), mn_(0), v_(0), row_(0), vm1_(0), rowm1_(0) {};$/;"	f	class:TNT::Matrix	access:public
@@ -1499,6 +1495,7 @@ _tstddev	simplemotionmodel.hh	/^      double _tstddev;$/;"	m	class:textured_loca
 _u_dist	random.hh	/^      uniform_real<double> _u_dist;$/;"	m	class:textured_localization::Random	access:private
 _u_dist	simplemotionmodel.hh	/^      uniform_real<double> _u_dist;$/;"	m	class:textured_localization::SimpleMotionModel	access:private
 _use_features	sensormodels.hh	/^	bool _use_features;$/;"	m	class:textured_localization::L2SensorModel	access:private
+_use_features	sensormodels.hh	/^	bool _use_features;$/;"	m	class:textured_localization::PerChannelNormalizedL2SensorModel	access:private
 _variance	sensormodels.hh	/^	double _variance;$/;"	m	class:textured_localization::GrayScaleL2SensorModel	access:private
 _variance	sensormodels.hh	/^	double _variance;$/;"	m	class:textured_localization::L2HueSensorModel	access:private
 _variance	sensormodels.hh	/^	double _variance;$/;"	m	class:textured_localization::L2SensorModel	access:private
@@ -1745,6 +1742,9 @@ cout	TNT/tnt_i_refvec.h	/^		std::cout  << "new data storage.\\n";$/;"	m	class:TN
 cout	TNT/tnt_i_refvec.h	/^		std::cout << "deleted data_[] ...\\n";$/;"	m	class:TNT::std
 cout	TNT/tnt_i_refvec.h	/^		std::cout << "deleted ref_count_ ...\\n";$/;"	m	class:TNT::std
 cout	TNT/tnt_i_refvec.h	/^		std::cout << "destorying data... \\n";$/;"	m	class:TNT::std
+cout	sensormodels.cc	/^		std::cout << "Alooo...Gobhi....Muli...Mattur Paneer";$/;"	m	class:textured_localization::std	file:
+cout	sensormodels.cc	/^		std::cout << "Panga nahi\\n";$/;"	m	class:textured_localization::std	file:
+cout	sensormodels.cc	/^		std::cout << "asdasdasdasdasdasd \\n";$/;"	m	class:textured_localization::std	file:
 cs	TNT/jama_svd.h	/^                  Real cs = f\/t;$/;"	l
 cube	bit_variance.cc	/^  Cube cube;$/;"	l
 cubes	viewmapslices.cc	/^vector<Cube>* cubes = NULL;$/;"	v
@@ -2783,8 +2783,8 @@ raw_image	bayer.hh	/^  void raw_image(int values[], IplImage* im);$/;"	p	namespa
 rea	sensormodels.cc	/^			CvScalar rea = cvGet2D(reading, i, j);$/;"	l
 rea_hist	sensormodels.cc	/^	double rea_hist[buckets];  \/\/ And again, he approves.$/;"	l
 rea_norm	manual_trajectory.cc	/^    IplImage* rea_norm = NULL;$/;"	l
+rea_norm	sensormodels.cc	/^		IplImage* rea_norm = NormalizePerChannel(reading, false);$/;"	l
 rea_norm	sensormodels.cc	/^	IplImage* rea_norm = Normalize(reading, false);$/;"	l
-rea_norm	sensormodels.cc	/^	IplImage* rea_norm = NormalizePerChannel(reading, false);$/;"	l
 rea_stats	sensormodels.cc	/^	pair<double, double> rea_stats = MeanAndStddev(rea_norm);$/;"	l
 read	TNT/tnt_stopwatch.h	/^		inline double read();$/;"	p	class:TNT::Stopwatch	access:public
 read	TNT/tnt_stopwatch.h	/^inline double Stopwatch::read()   $/;"	f	class:TNT::Stopwatch
@@ -2832,8 +2832,7 @@ ref_count_data	TNT/tnt_array2d.h	/^	inline int ref_count_data();$/;"	p	class:TNT
 ref_count_dim1	TNT/tnt_array2d.h	/^	inline int ref_count_dim1();$/;"	p	class:TNT::Array2D	access:public
 ref_gray	coster.cc	/^  IplImage* ref_gray = $/;"	l
 ref_gray	localization.cc	/^      IplImage* ref_gray = $/;"	l
-ref_gray	sensormodels.cc	/^		cv::Mat ref_gray, ref_read;$/;"	l
-ref_gray	sensormodels.cc	/^		cv::cvtColor(cv::Mat(reference), ref_gray, CV_BGR2GRAY);$/;"	l
+ref_gray	sensormodels.cc	/^		IplImage* ref_gray = cvCreateImage($/;"	l
 ref_gray	sensormodels.cc	/^	IplImage* ref_gray = cvCreateImage($/;"	l
 ref_hist	sensormodels.cc	/^	double ref_hist[buckets];$/;"	l
 ref_im	naive_color_calibrator.py	/^ref_im = Image.open(sys.argv[1])$/;"	v
@@ -2842,10 +2841,9 @@ ref_mat	naive_color_calibrator.py	/^ref_mat  = asarray(ref_im).reshape((-1, 3))$
 ref_mat	naive_color_calibrator.py	/^ref_mat = hstack((ref_mat, ones((ref_mat.shape[0], 1))))$/;"	v
 ref_mean	localization.cc	/^      CvScalar ref_mean, ref_stddev;$/;"	l
 ref_norm	manual_trajectory.cc	/^    IplImage* ref_norm = NULL;$/;"	l
+ref_norm	sensormodels.cc	/^		IplImage* ref_norm = NormalizePerChannel(reference, false);$/;"	l
 ref_norm	sensormodels.cc	/^	IplImage* ref_norm = Normalize(reference, false);$/;"	l
-ref_norm	sensormodels.cc	/^	IplImage* ref_norm = NormalizePerChannel(reference, false);$/;"	l
-ref_read	sensormodels.cc	/^		cv::Mat ref_gray, ref_read;$/;"	l
-ref_read	sensormodels.cc	/^		cv::cvtColor(cv::Mat(reading), ref_read, CV_BGR2GRAY);$/;"	l
+ref_read	sensormodels.cc	/^		IplImage* ref_read = cvCreateImage($/;"	l
 ref_small	manual_trajectory.cc	/^      IplImage* ref_small = $/;"	l
 ref_stats	sensormodels.cc	/^	pair<double, double> ref_stats = MeanAndStddev(ref_norm);$/;"	l
 ref_stddev	localization.cc	/^      CvScalar ref_mean, ref_stddev;$/;"	l
@@ -2893,6 +2891,7 @@ res	utilities.cc	/^  double res = angle;$/;"	l
 result	find_one.cc	/^    pair<size_t, size_t> result = FindBestAndWorstParticles(filter);$/;"	l
 result	sensormodel.cc	/^    IplImage* result = cvCloneImage(im);$/;"	l
 result	sensormodels.cc	/^	double result = _l2(ref_norm, rea_norm);$/;"	l
+result	sensormodels.cc	/^	double result;$/;"	l
 result	viewcontext.cc	/^  IplImage* result = cvCreateImage(cvSize(_width, _height), IPL_DEPTH_8U, 3);$/;"	l
 result	viewmapslices.cc	/^  CvMat* result = cvCreateMat(ysize, xsize, CV_8UC3);$/;"	l
 resume	TNT/tnt_stopwatch.h	/^		inline void resume();$/;"	p	class:TNT::Stopwatch	access:public
@@ -3188,8 +3187,6 @@ textured_localization::BestOrientationSensorModel::orig_pose	sensormodels.hh	/^	
 textured_localization::BestOrientationSensorModel::radians	sensormodels.hh	/^			ViewContext::Get().Rotate(radians(_stepsize));$/;"	p
 textured_localization::BestOrientationSensorModel::~BestOrientationSensorModel	sensormodels.hh	/^	~BestOrientationSensorModel() {$/;"	f	class:textured_localization::BestOrientationSensorModel	access:public
 textured_localization::CCenter	austinmotionmodel.cc	/^  double CCenter = (distance * _meanC_D) + $/;"	l
-textured_localization::CV_BGR2GRAY	sensormodels.cc	/^		cv::cvtColor(cv::Mat(reading), ref_read, CV_BGR2GRAY);$/;"	l
-textured_localization::CV_BGR2GRAY	sensormodels.cc	/^		cv::cvtColor(cv::Mat(reference), ref_gray, CV_BGR2GRAY);$/;"	l
 textured_localization::ChiSquaredSensorModel	sensormodels.hh	/^class ChiSquaredSensorModel: public SensorModel {$/;"	c	namespace:textured_localization	inherits:SensorModel
 textured_localization::ChiSquaredSensorModel::ChiSquaredSensorModel	sensormodels.cc	/^ChiSquaredSensorModel::ChiSquaredSensorModel(double multiplier) :$/;"	f	class:textured_localization::ChiSquaredSensorModel
 textured_localization::ChiSquaredSensorModel::ChiSquaredSensorModel	sensormodels.hh	/^	ChiSquaredSensorModel(double multiplier);$/;"	p	class:textured_localization::ChiSquaredSensorModel	access:public
@@ -3343,6 +3340,7 @@ textured_localization::PerChannelNormalizedL2SensorModel	sensormodels.hh	/^class
 textured_localization::PerChannelNormalizedL2SensorModel::PerChannelNormalizedL2SensorModel	sensormodels.cc	/^PerChannelNormalizedL2SensorModel::PerChannelNormalizedL2SensorModel($/;"	f	class:textured_localization::PerChannelNormalizedL2SensorModel
 textured_localization::PerChannelNormalizedL2SensorModel::PerChannelNormalizedL2SensorModel	sensormodels.hh	/^	PerChannelNormalizedL2SensorModel(double multiplier, bool use_features=false);$/;"	p	class:textured_localization::PerChannelNormalizedL2SensorModel	access:public
 textured_localization::PerChannelNormalizedL2SensorModel::_l2	sensormodels.hh	/^	L2SensorModel _l2;$/;"	m	class:textured_localization::PerChannelNormalizedL2SensorModel	access:private
+textured_localization::PerChannelNormalizedL2SensorModel::_use_features	sensormodels.hh	/^	bool _use_features;$/;"	m	class:textured_localization::PerChannelNormalizedL2SensorModel	access:private
 textured_localization::PerChannelNormalizedL2SensorModel::operator ()	sensormodels.cc	/^double PerChannelNormalizedL2SensorModel::operator()(IplImage* reference,$/;"	f	class:textured_localization::PerChannelNormalizedL2SensorModel
 textured_localization::PerChannelNormalizedL2SensorModel::operator ()	sensormodels.hh	/^	double operator()(IplImage* reference, IplImage* reading);$/;"	p	class:textured_localization::PerChannelNormalizedL2SensorModel	access:public
 textured_localization::PlainOldDraw	viewcontext.cc	/^void PlainOldDraw()$/;"	f	namespace:textured_localization
@@ -3580,8 +3578,6 @@ textured_localization::compute	sensormodels.cc	/^		extractor.compute(ref_gray, k
 textured_localization::compute	sensormodels.cc	/^		extractor.compute(ref_read, keypoints_2, descriptors_2);$/;"	p	file:
 textured_localization::count	barecell.cc	/^  int count = 0;$/;"	l
 textured_localization::current_mean	sensormodels.cc	/^	double current_mean = cvAvg(im).val[0];$/;"	l
-textured_localization::cv::Mat	sensormodels.cc	/^		cv::cvtColor(cv::Mat(reading), ref_read, CV_BGR2GRAY);$/;"	p	class:textured_localization::cv	file:
-textured_localization::cv::Mat	sensormodels.cc	/^		cv::cvtColor(cv::Mat(reference), ref_gray, CV_BGR2GRAY);$/;"	p	class:textured_localization::cv	file:
 textured_localization::cvnorm	sensormodels.cc	/^		double cvnorm = cvNorm(reference, reading, CV_L2, mask);$/;"	l
 textured_localization::d	sensormodels.cc	/^			double d = HueError(cvGet2D(reference, i, j),$/;"	l
 textured_localization::d	sensormodels.cc	/^			double d = L2HueSensorModel::HueError(cvGet2D(reference, i, j),$/;"	l
@@ -3761,20 +3757,18 @@ textured_localization::randomD	austinmotionmodel.cc	/^  double randomD = Random:
 textured_localization::randomT	austinmotionmodel.cc	/^  double randomT = Random::Get()->Gaussian(TCenter, Tstddev);$/;"	l
 textured_localization::rea	sensormodels.cc	/^			CvScalar rea = cvGet2D(reading, i, j);$/;"	l
 textured_localization::rea_hist	sensormodels.cc	/^	double rea_hist[buckets];  \/\/ And again, he approves.$/;"	l
+textured_localization::rea_norm	sensormodels.cc	/^		IplImage* rea_norm = NormalizePerChannel(reading, false);$/;"	l
 textured_localization::rea_norm	sensormodels.cc	/^	IplImage* rea_norm = Normalize(reading, false);$/;"	l
-textured_localization::rea_norm	sensormodels.cc	/^	IplImage* rea_norm = NormalizePerChannel(reading, false);$/;"	l
 textured_localization::rea_stats	sensormodels.cc	/^	pair<double, double> rea_stats = MeanAndStddev(rea_norm);$/;"	l
 textured_localization::read_gray	sensormodels.cc	/^	IplImage* read_gray = cvCreateImage($/;"	l
 textured_localization::red	sensormodel.cc	/^    IplImage* red = $/;"	l
 textured_localization::ref	sensormodels.cc	/^			CvScalar ref = cvGet2D(reference, i, j);$/;"	l
-textured_localization::ref_gray	sensormodels.cc	/^		cv::Mat ref_gray, ref_read;$/;"	l
-textured_localization::ref_gray	sensormodels.cc	/^		cv::cvtColor(cv::Mat(reference), ref_gray, CV_BGR2GRAY);$/;"	l
+textured_localization::ref_gray	sensormodels.cc	/^		IplImage* ref_gray = cvCreateImage($/;"	l
 textured_localization::ref_gray	sensormodels.cc	/^	IplImage* ref_gray = cvCreateImage($/;"	l
 textured_localization::ref_hist	sensormodels.cc	/^	double ref_hist[buckets];$/;"	l
+textured_localization::ref_norm	sensormodels.cc	/^		IplImage* ref_norm = NormalizePerChannel(reference, false);$/;"	l
 textured_localization::ref_norm	sensormodels.cc	/^	IplImage* ref_norm = Normalize(reference, false);$/;"	l
-textured_localization::ref_norm	sensormodels.cc	/^	IplImage* ref_norm = NormalizePerChannel(reference, false);$/;"	l
-textured_localization::ref_read	sensormodels.cc	/^		cv::Mat ref_gray, ref_read;$/;"	l
-textured_localization::ref_read	sensormodels.cc	/^		cv::cvtColor(cv::Mat(reading), ref_read, CV_BGR2GRAY);$/;"	l
+textured_localization::ref_read	sensormodels.cc	/^		IplImage* ref_read = cvCreateImage($/;"	l
 textured_localization::ref_stats	sensormodels.cc	/^	pair<double, double> ref_stats = MeanAndStddev(ref_norm);$/;"	l
 textured_localization::res	austinmotionmodel.cc	/^  vector<double> res;$/;"	l
 textured_localization::res	barecell.cc	/^  std::vector<int> res;$/;"	l
@@ -3793,6 +3787,7 @@ textured_localization::res	utilities.cc	/^  double res = 10e10;$/;"	l
 textured_localization::res	utilities.cc	/^  double res = angle;$/;"	l
 textured_localization::result	sensormodel.cc	/^    IplImage* result = cvCloneImage(im);$/;"	l
 textured_localization::result	sensormodels.cc	/^	double result = _l2(ref_norm, rea_norm);$/;"	l
+textured_localization::result	sensormodels.cc	/^	double result;$/;"	l
 textured_localization::result	viewcontext.cc	/^  IplImage* result = cvCreateImage(cvSize(_width, _height), IPL_DEPTH_8U, 3);$/;"	l
 textured_localization::rgb_to_hsv	colorspaces.cc	/^void rgb_to_hsv( int r, int g, int b, double& h, double& s, double& v )$/;"	f	namespace:textured_localization
 textured_localization::rgb_to_hsv	colorspaces.hh	/^  void rgb_to_hsv(int r, int g, int b, double& h, double& s, double& v);$/;"	p	namespace:textured_localization
@@ -3820,6 +3815,9 @@ textured_localization::spin	viewcontext.cc	/^  spinstream >> spin;$/;"	l
 textured_localization::spinstream	viewcontext.cc	/^  stringstream spinstream(config["spin"]);$/;"	p	file:
 textured_localization::srot	simplemotionmodel.cc	/^  double srot = (_vg() * _rstddev * dt) + (_rmean * dt);$/;"	l
 textured_localization::stats	sensormodel.cc	/^    pair<double, double> stats = MeanAndStddev(res);$/;"	l
+textured_localization::std::cout	sensormodels.cc	/^		std::cout << "Alooo...Gobhi....Muli...Mattur Paneer";$/;"	m	class:textured_localization::std	file:
+textured_localization::std::cout	sensormodels.cc	/^		std::cout << "Panga nahi\\n";$/;"	m	class:textured_localization::std	file:
+textured_localization::std::cout	sensormodels.cc	/^		std::cout << "asdasdasdasdasdasd \\n";$/;"	m	class:textured_localization::std	file:
 textured_localization::std::swap	barecell.cc	/^  std::swap(bc, rhs);$/;"	p	class:textured_localization::std	file:
 textured_localization::stddev	sensormodel.cc	/^    double stddev = sqrt(temp \/ n);$/;"	l
 textured_localization::stddevs	sensormodel.cc	/^    CvScalar stddevs;$/;"	l

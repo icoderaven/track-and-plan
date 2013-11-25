@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
                       ViewContext::Get().height());
     L2SensorModel L2S(10, false);
     NormalizedL2SensorModel NL2S(10);
-    PerChannelNormalizedL2SensorModel PCNL2S(0.5);
+    PerChannelNormalizedL2SensorModel PCNL2S(0.5, true);
     L2HueSensorModel HS(5000);
     L1HueSensorModel L1HS(ViewContext::Get().width(), 
                           ViewContext::Get().height());

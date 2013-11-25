@@ -81,9 +81,21 @@ double L2SensorModel::operator()(IplImage* reference, IplImage* reading) {
 		cv::SurfFeatureDetector detector(minHessian);
 
 		std::vector<cv::KeyPoint> keypoints_1, keypoints_2;
-		cv::Mat ref_gray, ref_read;
-		cv::cvtColor(cv::Mat(reference), ref_gray, CV_BGR2GRAY);
-		cv::cvtColor(cv::Mat(reading), ref_read, CV_BGR2GRAY);
+//		cv::Mat ref_gray, ref_read;
+		std::cout << reference->depth << "\n" << "is the depth \n";
+
+		IplImage* ref_gray = cvCreateImage(
+				cvSize(reference->width, reference->height), IPL_DEPTH_8U, 1);
+		cvCvtColor(reference, ref_gray, CV_BGR2GRAY);
+		std::cout << "Panga nahi\n";
+		std::cout << "asdasdasdasdasdasd \n";
+		std::cout << "asdasdasdasdasdasd \n";
+		IplImage* ref_read = cvCreateImage(
+				cvSize(reading->width, reading->height), IPL_DEPTH_8U, 1);
+		cvCvtColor(reading, ref_read, CV_BGR2GRAY);
+
+//		cv::cvtColor(cv::Mat(reference), ref_gray, CV_BGR2GRAY);
+//		cv::cvtColor(cv::Mat(reading), ref_read, CV_BGR2GRAY);
 
 		detector.detect(ref_gray, keypoints_1);
 		detector.detect(ref_read, keypoints_2);
@@ -115,6 +127,7 @@ double L2SensorModel::operator()(IplImage* reference, IplImage* reading) {
 			total += dist * dist;
 		}
 		double logprob = sqrt(total) / (2 * _variance);
+		std::cout << "Alooo...Gobhi....Muli...Mattur Paneer";
 		return exp(-(logprob * logprob));
 	}
 
@@ -371,19 +384,23 @@ double NormalizedL2SensorModel::operator()(IplImage* reference,
 }
 
 PerChannelNormalizedL2SensorModel::PerChannelNormalizedL2SensorModel(
-		double multiplier, bool use_features ) :
-		_l2(multiplier, false, use_features) {
+		double multiplier, bool use_features) :
+		_l2(multiplier, false, use_features), _use_features(use_features) {
 }
 
 double PerChannelNormalizedL2SensorModel::operator()(IplImage* reference,
 		IplImage* reading) {
-	IplImage* ref_norm = NormalizePerChannel(reference, false);
-	IplImage* rea_norm = NormalizePerChannel(reading, false);
+	double result;
+	if (!_use_features) {
+		IplImage* ref_norm = NormalizePerChannel(reference, false);
+		IplImage* rea_norm = NormalizePerChannel(reading, false);
 
-	double result = _l2(ref_norm, rea_norm);
-	cvReleaseImage(&ref_norm);
-	cvReleaseImage(&rea_norm);
-
+		result = _l2(ref_norm, rea_norm);
+		cvReleaseImage(&ref_norm);
+		cvReleaseImage(&rea_norm);
+	} else {
+		result = _l2(reference, reading);
+	}
 	return result;
 }
 
