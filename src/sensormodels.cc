@@ -82,14 +82,10 @@ double L2SensorModel::operator()(IplImage* reference, IplImage* reading) {
 
 		std::vector<cv::KeyPoint> keypoints_1, keypoints_2;
 //		cv::Mat ref_gray, ref_read;
-		std::cout << reference->depth << "\n" << "is the depth \n";
 
 		IplImage* ref_gray = cvCreateImage(
 				cvSize(reference->width, reference->height), IPL_DEPTH_8U, 1);
 		cvCvtColor(reference, ref_gray, CV_BGR2GRAY);
-		std::cout << "Panga nahi\n";
-		std::cout << "asdasdasdasdasdasd \n";
-		std::cout << "asdasdasdasdasdasd \n";
 		IplImage* ref_read = cvCreateImage(
 				cvSize(reading->width, reading->height), IPL_DEPTH_8U, 1);
 		cvCvtColor(reading, ref_read, CV_BGR2GRAY);
@@ -127,7 +123,6 @@ double L2SensorModel::operator()(IplImage* reference, IplImage* reading) {
 			total += dist * dist;
 		}
 		double logprob = sqrt(total) / (2 * _variance);
-		std::cout << "Alooo...Gobhi....Muli...Mattur Paneer";
 		return exp(-(logprob * logprob));
 	}
 
