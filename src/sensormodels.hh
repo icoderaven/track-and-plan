@@ -15,6 +15,7 @@
 #include "sensormodel.hh"
 #include "opencv2/features2d/features2d.hpp"
 #include "opencv2/nonfree/nonfree.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
 namespace textured_localization {
 /*

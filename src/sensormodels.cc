@@ -105,25 +105,49 @@ double L2SensorModel::operator()(IplImage* reference, IplImage* reading) {
 		extractor.compute(ref_read, keypoints_2, descriptors_2);
 
 		//-- Step 3: Matching descriptor vectors using FLANN matcher
-		cv::FlannBasedMatcher matcher;
-		std::vector<cv::DMatch> matches;
-		matcher.match(descriptors_1, descriptors_2, matches);
+		std::cout<<keypoints_2.size()<<"\n";
+		if (keypoints_1.size() != 0 && keypoints_2.size() != 0) {
+			cv::FlannBasedMatcher matcher;
+			std::vector<cv::DMatch> matches;
+			matcher.match(descriptors_1, descriptors_2, matches);
 
-		double max_dist = 0;
-		double min_dist = 100;
+			double max_dist = 0;
+			double min_dist = 100;
 
-		//-- Quick calculation of max and min distances between keypoints
-		for (int i = 0; i < descriptors_1.rows; i++) {
-			double dist = matches[i].distance;
-			if (dist < min_dist)
-				min_dist = dist;
-			if (dist > max_dist)
-				max_dist = dist;
+			//-- Quick calculation of max and min distances between keypoints
+			for (int i = 0; i < descriptors_1.rows; i++) {
+				double dist = matches[i].distance;
+				if (dist < min_dist)
+					min_dist = dist;
+				if (dist > max_dist)
+					max_dist = dist;
 
-			total += dist * dist;
+			}
+
+			std::vector<cv::DMatch> good_matches;
+
+			for (int i = 0; i < descriptors_1.rows; i++) {
+				double dist = matches[i].distance;
+				if (dist <= 2 * min_dist) {
+					good_matches.push_back(matches[i]);
+					total += dist * dist;
+				}
+			}
+
+			// --- Step 4: Display theees image
+			cv::Mat matches_img;
+			cv::drawMatches(ref_gray, keypoints_1, ref_read, keypoints_2,
+					good_matches, matches_img, cv::Scalar::all(-1),
+					cv::Scalar::all(-1), vector<char>(),
+					cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+			cv::imshow("OURAWESOMEWINDOW", matches_img);
+//				cv::waitKey(1);
+			double avg = total / good_matches.size();
+			double logprob = sqrt(avg) / (2 * _variance);
+			return exp(-(logprob * logprob));
+		} else {
+			return 0;
 		}
-		double logprob = sqrt(total) / (2 * _variance);
-		return exp(-(logprob * logprob));
 	}
 
 }

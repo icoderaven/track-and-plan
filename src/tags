@@ -1529,6 +1529,7 @@ asat	sensormodels.cc	/^	double ahue, asat, aval, bhue, bsat, bval;$/;"	l
 at	sorted_viewer.cc	/^  IplImage* at = pairs.at(position).img;$/;"	l
 attempts	localization.cc	/^	int attempts = 0;$/;"	l
 aval	sensormodels.cc	/^	double ahue, asat, aval, bhue, bsat, bval;$/;"	l
+avg	sensormodels.cc	/^			double avg = total \/ good_matches.size();$/;"	l
 avg_b	viewmapslices.cc	/^    double avg_b = 0.0;$/;"	l
 avg_g	viewmapslices.cc	/^    double avg_g = 0.0;$/;"	l
 avg_r	viewmapslices.cc	/^    double avg_r = 0.0; $/;"	l
@@ -1742,9 +1743,6 @@ cout	TNT/tnt_i_refvec.h	/^		std::cout  << "new data storage.\\n";$/;"	m	class:TN
 cout	TNT/tnt_i_refvec.h	/^		std::cout << "deleted data_[] ...\\n";$/;"	m	class:TNT::std
 cout	TNT/tnt_i_refvec.h	/^		std::cout << "deleted ref_count_ ...\\n";$/;"	m	class:TNT::std
 cout	TNT/tnt_i_refvec.h	/^		std::cout << "destorying data... \\n";$/;"	m	class:TNT::std
-cout	sensormodels.cc	/^		std::cout << "Alooo...Gobhi....Muli...Mattur Paneer";$/;"	m	class:textured_localization::std	file:
-cout	sensormodels.cc	/^		std::cout << "Panga nahi\\n";$/;"	m	class:textured_localization::std	file:
-cout	sensormodels.cc	/^		std::cout << "asdasdasdasdasdasd \\n";$/;"	m	class:textured_localization::std	file:
 cs	TNT/jama_svd.h	/^                  Real cs = f\/t;$/;"	l
 cube	bit_variance.cc	/^  Cube cube;$/;"	l
 cubes	viewmapslices.cc	/^vector<Cube>* cubes = NULL;$/;"	v
@@ -1817,12 +1815,13 @@ dim3	TNT/tnt_fortran_array3d.h	/^inline int Fortran_Array3D<T>::dim3() const { r
 dirname	bit_variance.cc	/^  bfs::path dirname(argv[1]);$/;"	p	file:
 dirname	log_to_movie.cc	/^  bfs::path dirname(argv[1]);$/;"	p	file:
 dist	pose.cc	/^  double dist = sqrt((rhs.x() * rhs.x()) + (rhs.y() * rhs.y()));$/;"	l
-dist	sensormodels.cc	/^			double dist = matches[i].distance;$/;"	l
+dist	sensormodels.cc	/^				double dist = matches[i].distance;$/;"	l
 dist	simplemotionmodel.cc	/^  double dist = sqrt((dx * dx) + (dy * dy));$/;"	l
 distance	austinmotionmodel.cc	/^  double distance = sqrt((dx * dx) + (dy * dy));$/;"	l
 div	extended_tnt.hh	/^    Array2D<T> div = Array2D<T>(A.dim1(), 1, sqrt(A3[0][0]));$/;"	l
 dl1	TNT/jama_eig.h	/^               Real dl1 = d[l+1];$/;"	l
 down	sparsemap.cc	/^  bool down = false;$/;"	l
+drawMatches	sensormodels.cc	/^			cv::drawMatches(ref_gray, keypoints_1, ref_read, keypoints_2,$/;"	p	class:textured_localization::cv	file:
 dx	pose.cc	/^  double dx = dist * cos(lhs.theta());$/;"	l
 dy	pose.cc	/^  double dy = dist * sin(lhs.theta());$/;"	l
 e	TNT/jama_eig.h	/^   TNT::Array1D<Real> e;         \/* img part *\/$/;"	m	class:JAMA::Eigenvalue	access:private
@@ -2091,6 +2090,7 @@ get_pgm_dimesions_f	pgm.cc	/^void get_pgm_dimesions_f(char *fname, int* width, i
 get_pgm_dimesions_f	pgm.h	/^get_pgm_dimesions_f(char *fname, int* width, int* height);$/;"	p
 gg	barecell.cc	/^    int rr, gg, bb;$/;"	l
 gg	viewmapslices.cc	/^      double rr, gg, bb, pcc;$/;"	l
+good_matches	sensormodels.cc	/^			std::vector<cv::DMatch> good_matches;$/;"	l
 green	sensormodel.cc	/^    IplImage* green = $/;"	l
 green_pixels	sensormodel.cc	/^    int green_pixels = 0;$/;"	l
 h	TNT/jama_eig.h	/^               Real h = g - d[l];$/;"	l
@@ -2258,8 +2258,8 @@ logfile	camera_permuter.py	/^logfile = file(BASE + os.path.basename(sys.argv[1])
 logfile	extract_trajectory.cc	/^  ifstream logfile(argv[2]);$/;"	p	file:
 logfile	localization.cc	/^    bfs::path logfile = logdir \/ (logdir.filename().string() + ".log");$/;"	l
 logname	log_to_movie.cc	/^  bfs::path logname = dirname.filename().string() + ".log";$/;"	l
+logprob	sensormodels.cc	/^			double logprob = sqrt(avg) \/ (2 * _variance);$/;"	l
 logprob	sensormodels.cc	/^		double logprob = cvnorm \/ (2 * _variance);$/;"	l
-logprob	sensormodels.cc	/^		double logprob = sqrt(total) \/ (2 * _variance);$/;"	l
 logprob	sensormodels.cc	/^	double logprob = norm \/ (2 * _variance);$/;"	l
 logprob	sensormodels.cc	/^	double logprob = sqrt(total) \/ (2 * _variance);$/;"	l
 low	TNT/jama_eig.h	/^      int low = 0;$/;"	l
@@ -2320,9 +2320,10 @@ mappath	viewer.cc	/^    bfs::path mappath(argv[1]);$/;"	p	file:
 mapstream	viewer.cc	/^    bfs::ifstream mapstream(mappath);$/;"	p	file:
 mask	sensormodel.cc	/^    IplImage* mask = $/;"	l
 mask	sensormodels.cc	/^	IplImage* mask = NULL;$/;"	l
-match	sensormodels.cc	/^		matcher.match(descriptors_1, descriptors_2, matches);$/;"	p	file:
-matcher	sensormodels.cc	/^		cv::FlannBasedMatcher matcher;$/;"	l
-matches	sensormodels.cc	/^		std::vector<cv::DMatch> matches;$/;"	l
+match	sensormodels.cc	/^			matcher.match(descriptors_1, descriptors_2, matches);$/;"	p	file:
+matcher	sensormodels.cc	/^			cv::FlannBasedMatcher matcher;$/;"	l
+matches	sensormodels.cc	/^			std::vector<cv::DMatch> matches;$/;"	l
+matches_img	sensormodels.cc	/^			cv::Mat matches_img;$/;"	l
 matmult	TNT/tnt_array2d_utils.h	/^Array2D<T> matmult(const Array2D<T> &A, const Array2D<T> &B)$/;"	f	namespace:TNT
 matrix	color_conversion_test.cc	/^  Array2D<double> matrix;$/;"	l
 matrix	color_conversion_test.cc	/^  ss >> matrix;$/;"	l
@@ -2331,7 +2332,7 @@ max	heatmap.cc	/^  double max = maximum_element(heatmap);$/;"	l
 max	heatmap_rotation.cc	/^  double max = maximum_element(heatmap);$/;"	l
 max	l2shower.cc	/^  double max = maximum_element(res);$/;"	l
 max	sorted_viewer.cc	/^  double max = maximum_element(res);$/;"	l
-max_dist	sensormodels.cc	/^		double max_dist = 0;$/;"	l
+max_dist	sensormodels.cc	/^			double max_dist = 0;$/;"	l
 max_x	viewmapslices.cc	/^  int max_x = -1000000;$/;"	l
 max_y	viewmapslices.cc	/^  int max_y = -1000000;$/;"	l
 max_z	viewmapslices.cc	/^  int max_z = -1000000;$/;"	l
@@ -2350,7 +2351,7 @@ min	heatmap_rotation.cc	/^  double min = minimum_element(heatmap);$/;"	l
 min	l2shower.cc	/^  double min = minimum_element(res);$/;"	l
 min	sorted_viewer.cc	/^  double min = minimum_element(res);$/;"	l
 minHessian	sensormodels.cc	/^		int minHessian = 400;$/;"	l
-min_dist	sensormodels.cc	/^		double min_dist = 100;$/;"	l
+min_dist	sensormodels.cc	/^			double min_dist = 100;$/;"	l
 min_x	viewmapslices.cc	/^  int min_x = 1000000;$/;"	l
 min_y	viewmapslices.cc	/^  int min_y = 1000000;$/;"	l
 min_z	viewmapslices.cc	/^  int min_z = 1000000;$/;"	l
@@ -2739,6 +2740,7 @@ push_back	pose.cc	/^  res.push_back(xmax);$/;"	p	file:
 push_back	pose.cc	/^  res.push_back(xmin);$/;"	p	file:
 push_back	pose.cc	/^  res.push_back(ymax);$/;"	p	file:
 push_back	pose.cc	/^  res.push_back(ymin);$/;"	p	file:
+push_back	sensormodels.cc	/^					good_matches.push_back(matches[i]);$/;"	p	file:
 push_back	simplemotionmodel.cc	/^  res.push_back(nx);$/;"	p	file:
 push_back	simplemotionmodel.cc	/^  res.push_back(ny);$/;"	p	file:
 push_back	simplemotionmodel.cc	/^  res.push_back(srot);$/;"	p	file:
@@ -2982,6 +2984,7 @@ size	TNT/tnt_cmat.h	/^    Subscript size() const { return mn_; }$/;"	f	class:TNT
 size	TNT/tnt_vec.h	/^    inline Subscript size() const $/;"	f	class:TNT::Vector	access:public
 size	barecell.cc	/^  int size;$/;"	l
 size	heatmap_rotation.cc	/^  int size = (int)((360.0 \/ stepsize) + 0.5);$/;"	l
+size	sensormodels.cc	/^		std::cout<<keypoints_2.size()<<"\\n";$/;"	p	file:
 size	sparsemap.cc	/^  int size = (int)((offset * SCALE) + 0.5);$/;"	l
 size	viewer.cc	/^    int size;$/;"	l
 size_type	TNT/tnt_cmat.h	/^    typedef Subscript   size_type;$/;"	t	class:TNT::Matrix	access:public
@@ -3547,6 +3550,7 @@ textured_localization::ahue	sensormodels.cc	/^	double ahue, asat, aval, bhue, bs
 textured_localization::area	sensormodel.cc	/^    int area = im->width * im->height;$/;"	l
 textured_localization::asat	sensormodels.cc	/^	double ahue, asat, aval, bhue, bsat, bval;$/;"	l
 textured_localization::aval	sensormodels.cc	/^	double ahue, asat, aval, bhue, bsat, bval;$/;"	l
+textured_localization::avg	sensormodels.cc	/^			double avg = total \/ good_matches.size();$/;"	l
 textured_localization::b	barecell.cc	/^  vector<double> b;$/;"	l
 textured_localization::bb	barecell.cc	/^    int rr, gg, bb;$/;"	l
 textured_localization::bbox	particle_visualizer.cc	/^  vector<int> bbox = BareCell::BoundingBox(cells);$/;"	l
@@ -3578,6 +3582,7 @@ textured_localization::compute	sensormodels.cc	/^		extractor.compute(ref_gray, k
 textured_localization::compute	sensormodels.cc	/^		extractor.compute(ref_read, keypoints_2, descriptors_2);$/;"	p	file:
 textured_localization::count	barecell.cc	/^  int count = 0;$/;"	l
 textured_localization::current_mean	sensormodels.cc	/^	double current_mean = cvAvg(im).val[0];$/;"	l
+textured_localization::cv::drawMatches	sensormodels.cc	/^			cv::drawMatches(ref_gray, keypoints_1, ref_read, keypoints_2,$/;"	p	class:textured_localization::cv	file:
 textured_localization::cvnorm	sensormodels.cc	/^		double cvnorm = cvNorm(reference, reading, CV_L2, mask);$/;"	l
 textured_localization::d	sensormodels.cc	/^			double d = HueError(cvGet2D(reference, i, j),$/;"	l
 textured_localization::d	sensormodels.cc	/^			double d = L2HueSensorModel::HueError(cvGet2D(reference, i, j),$/;"	l
@@ -3593,7 +3598,7 @@ textured_localization::detect	sensormodels.cc	/^		detector.detect(ref_read, keyp
 textured_localization::detector	sensormodels.cc	/^		cv::SurfFeatureDetector detector(minHessian);$/;"	p	file:
 textured_localization::diff	sensormodels.cc	/^	double diff = fabs(ahue - bhue);$/;"	l
 textured_localization::dist	pose.cc	/^  double dist = sqrt((rhs.x() * rhs.x()) + (rhs.y() * rhs.y()));$/;"	l
-textured_localization::dist	sensormodels.cc	/^			double dist = matches[i].distance;$/;"	l
+textured_localization::dist	sensormodels.cc	/^				double dist = matches[i].distance;$/;"	l
 textured_localization::dist	simplemotionmodel.cc	/^  double dist = sqrt((dx * dx) + (dy * dy));$/;"	l
 textured_localization::distance	austinmotionmodel.cc	/^  double distance = sqrt((dx * dx) + (dy * dy));$/;"	l
 textured_localization::down	sparsemap.cc	/^  bool down = false;$/;"	l
@@ -3633,6 +3638,7 @@ textured_localization::fvy	viewcontext.cc	/^  double fvy = TF[1][0] - TO[1][0];$
 textured_localization::fvz	viewcontext.cc	/^  double fvz = TF[2][0] - TO[2][0];$/;"	l
 textured_localization::g	barecell.cc	/^  vector<double> g;$/;"	l
 textured_localization::gg	barecell.cc	/^    int rr, gg, bb;$/;"	l
+textured_localization::good_matches	sensormodels.cc	/^			std::vector<cv::DMatch> good_matches;$/;"	l
 textured_localization::green	sensormodel.cc	/^    IplImage* green = $/;"	l
 textured_localization::green_pixels	sensormodel.cc	/^    int green_pixels = 0;$/;"	l
 textured_localization::h	barecell.cc	/^  int x, y, z, h;$/;"	l
@@ -3655,8 +3661,8 @@ textured_localization::keypoints_2	sensormodels.cc	/^		std::vector<cv::KeyPoint>
 textured_localization::kld	kldmm.cc	/^  double kld = _epsilon * 10;$/;"	l
 textured_localization::line	kvparser.cc	/^  string line;$/;"	l
 textured_localization::linen	kvparser.cc	/^  int linen = 1;$/;"	l
+textured_localization::logprob	sensormodels.cc	/^			double logprob = sqrt(avg) \/ (2 * _variance);$/;"	l
 textured_localization::logprob	sensormodels.cc	/^		double logprob = cvnorm \/ (2 * _variance);$/;"	l
-textured_localization::logprob	sensormodels.cc	/^		double logprob = sqrt(total) \/ (2 * _variance);$/;"	l
 textured_localization::logprob	sensormodels.cc	/^	double logprob = norm \/ (2 * _variance);$/;"	l
 textured_localization::logprob	sensormodels.cc	/^	double logprob = sqrt(total) \/ (2 * _variance);$/;"	l
 textured_localization::lu	utilities.cc	/^  JAMA::LU<double> lu(A);$/;"	p	file:
@@ -3665,11 +3671,12 @@ textured_localization::magicRotation	viewcontext.cc	/^    s >> magicRotation;$/;
 textured_localization::make_pair	kvparser.cc	/^    _map.insert(make_pair(equal_split[0], equal_split[1]));$/;"	p	file:
 textured_localization::mask	sensormodel.cc	/^    IplImage* mask = $/;"	l
 textured_localization::mask	sensormodels.cc	/^	IplImage* mask = NULL;$/;"	l
-textured_localization::match	sensormodels.cc	/^		matcher.match(descriptors_1, descriptors_2, matches);$/;"	p	file:
-textured_localization::matcher	sensormodels.cc	/^		cv::FlannBasedMatcher matcher;$/;"	l
-textured_localization::matches	sensormodels.cc	/^		std::vector<cv::DMatch> matches;$/;"	l
+textured_localization::match	sensormodels.cc	/^			matcher.match(descriptors_1, descriptors_2, matches);$/;"	p	file:
+textured_localization::matcher	sensormodels.cc	/^			cv::FlannBasedMatcher matcher;$/;"	l
+textured_localization::matches	sensormodels.cc	/^			std::vector<cv::DMatch> matches;$/;"	l
+textured_localization::matches_img	sensormodels.cc	/^			cv::Mat matches_img;$/;"	l
 textured_localization::matrix2	sensormodel.cc	/^    Array2D<double> matrix2(matrix);$/;"	p	file:
-textured_localization::max_dist	sensormodels.cc	/^		double max_dist = 0;$/;"	l
+textured_localization::max_dist	sensormodels.cc	/^			double max_dist = 0;$/;"	l
 textured_localization::maximum_element	utilities.cc	/^double maximum_element(IplImage* arr)$/;"	f	namespace:textured_localization
 textured_localization::maximum_element	utilities.hh	/^  double maximum_element(IplImage* arr);$/;"	p	namespace:textured_localization
 textured_localization::maxx	barecell.cc	/^  int minx, maxx, miny, maxy, minz, maxz;$/;"	l
@@ -3678,7 +3685,7 @@ textured_localization::maxz	barecell.cc	/^  int minx, maxx, miny, maxy, minz, ma
 textured_localization::mean	sensormodel.cc	/^    double mean = sum \/ n;$/;"	l
 textured_localization::means	sensormodel.cc	/^    CvScalar means;$/;"	l
 textured_localization::minHessian	sensormodels.cc	/^		int minHessian = 400;$/;"	l
-textured_localization::min_dist	sensormodels.cc	/^		double min_dist = 100;$/;"	l
+textured_localization::min_dist	sensormodels.cc	/^			double min_dist = 100;$/;"	l
 textured_localization::minimum_element	utilities.cc	/^double minimum_element(IplImage* arr)$/;"	f	namespace:textured_localization
 textured_localization::minimum_element	utilities.hh	/^  double minimum_element(IplImage* arr);$/;"	p	namespace:textured_localization
 textured_localization::minx	barecell.cc	/^  int minx, maxx, miny, maxy, minz, maxz;$/;"	l
@@ -3743,6 +3750,7 @@ textured_localization::push_back	pose.cc	/^  res.push_back(xmax);$/;"	p	file:
 textured_localization::push_back	pose.cc	/^  res.push_back(xmin);$/;"	p	file:
 textured_localization::push_back	pose.cc	/^  res.push_back(ymax);$/;"	p	file:
 textured_localization::push_back	pose.cc	/^  res.push_back(ymin);$/;"	p	file:
+textured_localization::push_back	sensormodels.cc	/^					good_matches.push_back(matches[i]);$/;"	p	file:
 textured_localization::push_back	simplemotionmodel.cc	/^  res.push_back(nx);$/;"	p	file:
 textured_localization::push_back	simplemotionmodel.cc	/^  res.push_back(ny);$/;"	p	file:
 textured_localization::push_back	simplemotionmodel.cc	/^  res.push_back(srot);$/;"	p	file:
@@ -3809,15 +3817,13 @@ textured_localization::set	particle.cc	/^  _pose.set(_pose.x() + dx, _pose.y() +
 textured_localization::set	pose.cc	/^  rhs.set(x, y, z, theta);$/;"	p	file:
 textured_localization::set_weight	particle.cc	/^    p.set_weight(p.weight() \/ sum);$/;"	p	file:
 textured_localization::size	barecell.cc	/^  int size;$/;"	l
+textured_localization::size	sensormodels.cc	/^		std::cout<<keypoints_2.size()<<"\\n";$/;"	p	file:
 textured_localization::size	sparsemap.cc	/^  int size = (int)((offset * SCALE) + 0.5);$/;"	l
 textured_localization::spin	viewcontext.cc	/^  Array2D<double> spin;$/;"	l
 textured_localization::spin	viewcontext.cc	/^  spinstream >> spin;$/;"	l
 textured_localization::spinstream	viewcontext.cc	/^  stringstream spinstream(config["spin"]);$/;"	p	file:
 textured_localization::srot	simplemotionmodel.cc	/^  double srot = (_vg() * _rstddev * dt) + (_rmean * dt);$/;"	l
 textured_localization::stats	sensormodel.cc	/^    pair<double, double> stats = MeanAndStddev(res);$/;"	l
-textured_localization::std::cout	sensormodels.cc	/^		std::cout << "Alooo...Gobhi....Muli...Mattur Paneer";$/;"	m	class:textured_localization::std	file:
-textured_localization::std::cout	sensormodels.cc	/^		std::cout << "Panga nahi\\n";$/;"	m	class:textured_localization::std	file:
-textured_localization::std::cout	sensormodels.cc	/^		std::cout << "asdasdasdasdasdasd \\n";$/;"	m	class:textured_localization::std	file:
 textured_localization::std::swap	barecell.cc	/^  std::swap(bc, rhs);$/;"	p	class:textured_localization::std	file:
 textured_localization::stddev	sensormodel.cc	/^    double stddev = sqrt(temp \/ n);$/;"	l
 textured_localization::stddevs	sensormodel.cc	/^    CvScalar stddevs;$/;"	l
