@@ -177,6 +177,9 @@ namespace textured_localization
        */
       const std::vector<BareCell>& cells() const;
 
+      //@Us : Create a function to return corresponding 3D points from requested 2D points
+      void Get3Dfrom2D(std::vector<cv::Point2f> in_pts, std::vector<cv::Point3f> &out_pts);
+
     private:
       ViewContext(); // "Lots of zeros!"
 
