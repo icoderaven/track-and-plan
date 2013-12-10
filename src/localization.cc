@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
 	cv::Mat _cameraMatrix, _distCoeffs;
 	fs["camera_matrix"] >> _cameraMatrix;
 	fs["distortion_coefficients"] >> _distCoeffs;
-	cout<<_cameraMatrix;
+	cout << _cameraMatrix;
 	try {
 		if (argc < 6 || argc > 7)
 			PrintUsageAndDie();
@@ -204,7 +204,7 @@ int main(int argc, char* argv[]) {
 				ViewContext::Get().height());
 		L2SensorModel L2S(10, false);
 		NormalizedL2SensorModel NL2S(10);
-		PerChannelNormalizedL2SensorModel PCNL2S(0.5, _use_features);
+		PerChannelNormalizedL2SensorModel PCNL2S(0.5, false);
 		L2HueSensorModel HS(5000);
 		L1HueSensorModel L1HS(ViewContext::Get().width(),
 				ViewContext::Get().height());
@@ -471,7 +471,8 @@ int main(int argc, char* argv[]) {
 				std::vector<cv::KeyPoint> keypoints_1, keypoints_2;
 				//		cv::Mat ref_gray2, ref_read;
 				IplImage* ref_gray2 = cvCreateImage(
-								cvSize(reference->width, reference->height), IPL_DEPTH_8U, 1);
+						cvSize(reference->width, reference->height),
+						IPL_DEPTH_8U, 1);
 				IplImage* ref_read = cvCreateImage(
 						cvSize(best->width, best->height), IPL_DEPTH_8U, 1);
 				cvCvtColor(best, ref_read, CV_BGR2GRAY);
@@ -543,36 +544,84 @@ int main(int argc, char* argv[]) {
 						ref_pts.push_back(all_ref[it->trainIdx]);
 						ren_pts.push_back(all_ren[it->queryIdx]);
 					}
-					//b. Get corresponding 3D points from viewcontext
-					std::vector<cv::Point3f> map_pts;
-					ViewContext::Get().Get3Dfrom2D(ren_pts, map_pts);
-					//c. Call solvepnp
-					cv::Mat rvec, tvec;
-					//@todo use current pose estimate to speed things up/optimize
+
+					cout << "\nNumber of matches :: "<<ref_pts.size() << endl;
+					if (ref_pts.size() >= 4) {
+
+						//b. Get corresponding 3D points from viewcontext
+						std::vector<cv::Point3f> map_pts;
+						//c. Call solvepnp
+						cv::Mat rvec, tvec;
+						//@todo use current pose estimate to speed things up/optimize
 //					cv::Mat cam = "0.9795 0.0940 0.1780 85.8394 -0.0097 0.9053 -0.4246 -33.9370 -0.2010 0.4141 0.8877 138.1021 0 0 0 1";
+//					std::vector<cv::Point2f> indices;
+//					for (int i = 0; i < ref_gray2->height; i++) {
+//						for (int j = 0; j < ref_gray2->width; j++) {
+//							indices.push_back(cv::Point2f(j, i));
+//						}
+//					}
+						ViewContext::Get().Get3Dfrom2D(ren_pts, map_pts);
+						cv::solvePnP(map_pts, ref_pts, _cameraMatrix,
+								_distCoeffs, rvec, tvec);
 
-					cv::solvePnP(map_pts, ref_pts, _cameraMatrix, _distCoeffs,
-							rvec, tvec);
+						cv::Mat R;
+						cv::Rodrigues(rvec, R);
+						cv::Mat T = cv::Mat::zeros(4, 4, R.type());
+						T(cv::Range(0, 3), cv::Range(0, 3)) = R * 1; // copies R into T
+						T(cv::Range(0, 3), cv::Range(3, 4)) = tvec * 1; // copies tvec into T
 
-					cv::Mat R;
-					cv::Rodrigues(rvec, R);
-					cv::Mat T(4, 4, R.type());
-					T(cv::Range(0, 3), cv::Range(0, 3)) = R * 1; // copies R into T
-					T(cv::Range(0, 3), cv::Range(3, 4)) = tvec * 1; // copies tvec into T
-					Array2D<double> world_to_camera(4, 4, (double*) T.data);
-					//This is a transformation from the world to camera. We need to chain it with camera to robot to get world to robot
-					Array2D<double> _camera(4, 4);
-					stringstream camstream(config["robot_cam"]);
-					camstream >> _camera;
-					//This is from robot to camera, therefore we need to invert this transformation
-					Array2D<double> world_transform;
-					world_transform = matmult(world_to_camera, invert(_camera));
-					Pose rectified_pose(world_transform[0][3],
-							world_transform[1][3], world_transform[2][3],
-							atan2(world_transform[0][1],
-									world_transform[1][1]));
-					//Whew, print this out
-					cout << "Our pose: " << rectified_pose << endl;
+						cout << R << "\n\n" << tvec;
+						Array2D<double> world_to_camera(4, 4, (double*) T.data);
+						world_to_camera[3][3] = 1;
+						cout << world_to_camera << "\n\n"
+								<< invert(world_to_camera);
+						//This is a transformation from the world to camera. We need to chain it with camera to robot to get world to robot
+					Array2D<double> _camera = ViewContext::Get().Camera();
+//						Array2D<double> _camera(4, 4);
+//						stringstream camstream(config["robot_cam"]);
+//						camstream >> _camera;
+						//This is from robot to camera
+						Array2D<double> world_transform;
+						world_transform = (matmult(invert(world_to_camera),
+								(_camera)));
+//					Pose rectified_pose(world_transform[0][3],
+//							world_transform[1][3], world_transform[2][3],
+//							atan2(world_transform[0][1],
+//									world_transform[1][1]));
+
+						Array2D<double> O = Origin<double>();
+						Array2D<double> X = PlusX<double>();
+						O = matmult(world_transform, O);
+						X = matmult(world_transform, X);
+						X = X - O;
+						Pose rectified_pose = Pose(O[0][0], O[1][0], O[2][0],
+								atan2(X[1][0], X[0][0]));
+
+						//Diagnostic - print camera pose wrt world
+						Array2D<double> best_transform =
+								ViewContext::Get().Robot();
+						Array2D<double> camera_transform = matmult(
+								best_transform, _camera);
+						cout << " Raw pose: " << world_transform
+								<< "\n Camera_transform " << camera_transform;
+						//Whew, print this out
+						cout << "Our pose: " << rectified_pose << endl;
+//					cout << "\n3D points" << map_pts;
+						//Test to see if get 3D from 2D works. It does.
+//					std::vector<cv::Point2f> indices;
+//					for (int i = 0; i < ref_gray2->height; i++) {
+//						for (int j = 0; j < ref_gray2->width; j++) {
+//							indices.push_back(cv::Point2f(j, i));
+//						}
+//					}
+//					ViewContext::Get().Get3Dfrom2D(indices, map_pts);
+//					ofstream outfile("point.txt", ios::out);
+//					for(vector<cv::Point3f>::const_iterator i = map_pts.begin(); i != map_pts.end(); ++i) {
+//					    outfile << *i << '\n';
+//					}
+//					outfile.close();
+						cv::waitKey(-1);
+					}
 				} else {
 					cout << "\nmummmmmmmmmmmmmmmmmmmmmmmmy!!!!!!!!!";
 				}

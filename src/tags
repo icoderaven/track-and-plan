@@ -577,6 +577,7 @@ NormalizedL2SensorModel	sensormodels.cc	/^NormalizedL2SensorModel::NormalizedL2S
 NormalizedL2SensorModel	sensormodels.hh	/^	NormalizedL2SensorModel(double multiplier);$/;"	p	class:textured_localization::NormalizedL2SensorModel	access:public
 NormalizedL2SensorModel	sensormodels.hh	/^class NormalizedL2SensorModel: public SensorModel {$/;"	c	namespace:textured_localization	inherits:SensorModel
 NumNonzeros	TNT/tnt_sparse_matrix_csr.h	/^       int          NumNonzeros() const {return val_.dim1();}$/;"	f	class:TNT::Sparse_Matrix_CompRow	access:public
+O	localization.cc	/^						Array2D<double> O = Origin<double>();$/;"	l
 O	matrix_examiner.cc	/^  TNT::Array2D<double> O;$/;"	l
 O	viewcontext.cc	/^	Array2D<double> O = Origin<double>();$/;"	l
 ONLY_TEN	bayer.hh	/^  const int ONLY_TEN = (BOTTOM_TWO | L_MIDDLE_TWO | $/;"	m	namespace:bayer
@@ -662,7 +663,7 @@ QR	TNT/jama_qr.h	/^class QR {$/;"	c	namespace:JAMA
 QR_	TNT/jama_qr.h	/^   TNT::Array2D<Real> QR_;$/;"	m	class:JAMA::QR	access:private
 R	TNT/jama_qr.h	/^      TNT::Array2D<Real> R(n,n);$/;"	p
 R	add_trajectory_to_map.cc	/^        Array2D<double> R = matmult(RotZ<double>(p.theta()), offset);$/;"	l
-R	localization.cc	/^					cv::Mat R;$/;"	l
+R	localization.cc	/^						cv::Mat R;$/;"	l
 RANDOM	simulated_robot_tracking.cc	/^    ifstream RANDOM(argv[4]);$/;"	p	file:
 RAW_SIZE	bit_variance.cc	/^const unsigned int RAW_SIZE = 2400000;$/;"	v
 RIEGL	viewcontext.cc	29;"	d	file:
@@ -678,7 +679,7 @@ Render	viewcontext.cc	/^IplImage* ViewContext::Render() {$/;"	f	class:textured_l
 Render	viewcontext.hh	/^      IplImage* Render();$/;"	p	class:textured_localization::ViewContext	access:public
 Robot	viewcontext.cc	/^Array2D<double> ViewContext::Robot() const {$/;"	f	class:textured_localization::ViewContext
 Robot	viewcontext.hh	/^      Array2D<double> Robot() const;  \/\/ The transformation matrix.$/;"	p	class:textured_localization::ViewContext	access:public
-Rodrigues	localization.cc	/^					cv::Rodrigues(rvec, R);$/;"	p	class:cv	file:
+Rodrigues	localization.cc	/^						cv::Rodrigues(rvec, R);$/;"	p	class:cv	file:
 RotX	extended_tnt.hh	/^  Array2D<T> RotX(double angle)$/;"	f	namespace:TNT
 RotY	extended_tnt.hh	/^  Array2D<T> RotY(double angle)$/;"	f	namespace:TNT
 RotZ	extended_tnt.hh	/^  Array2D<T> RotZ(double angle)$/;"	f	namespace:TNT
@@ -738,6 +739,7 @@ Stopwatch	TNT/tnt_stopwatch.h	/^class Stopwatch {$/;"	c	namespace:TNT
 Stopwatch	TNT/tnt_stopwatch.h	/^inline Stopwatch::Stopwatch() : running_(0), start_time_(0.0), total_(0.0) {}$/;"	f	class:TNT::Stopwatch
 Subscript	TNT/tnt_subscript.h	/^    typedef TNT_SUBSCRIPT_TYPE Subscript;$/;"	t	namespace:TNT
 T	add_trajectory_to_map.cc	/^    ifstream T(argv[i]);$/;"	p	file:
+T	localization.cc	/^						cv::Mat T = cv::Mat::zeros(4, 4, R.type());$/;"	l
 T	naive_color_calibrator.py	/^T = scipy.linalg.lstsq(ref_mat, ren_mat)[0]$/;"	v
 T	viewcontext.cc	/^	Array2D<double> T = TF - TO;$/;"	l
 TCenter	austinmotionmodel.cc	/^  double TCenter = (distance * _meanT_D) + $/;"	l
@@ -1410,6 +1412,7 @@ WriteToFile	kvparser.hh	/^      void WriteToFile(const std::string& filename) co
 X	TNT/jama_lu.h	/^		Array2D<Real> X(piv_length, j1-j0+1);$/;"	p
 X	TNT/jama_lu.h	/^	  Array2D<Real> X = permute_copy(B, piv, 0, nx-1);$/;"	l
 X	TNT/jama_qr.h	/^	  TNT::Array2D<Real> X = B.copy();$/;"	l
+X	localization.cc	/^						Array2D<double> X = PlusX<double>();$/;"	l
 X	matrix_examiner.cc	/^  TNT::Array2D<double> X;$/;"	l
 X	viewcontext.cc	/^	Array2D<double> X = PlusX<double>();$/;"	l
 XYZ	sparsemap.cc	/^    _set.insert(XYZ(b));$/;"	p	file:
@@ -1442,10 +1445,10 @@ _b	barecell.hh	/^      vector<double> _b;$/;"	m	class:textured_localization::Bar
 _bayer_type	bayer.hh	/^      int _bayer_type;$/;"	m	class:bayer::OpenCVInterpolation	access:private
 _best_pose	sensormodels.hh	/^	Pose _best_pose;$/;"	m	class:textured_localization::BestOrientationSensorModel	access:private
 _bucketsize	sensormodels.hh	/^	int _bucketsize;$/;"	m	class:textured_localization::MutualInformationSensorModel	access:private
-_camera	localization.cc	/^					camstream >> _camera;$/;"	l
+_camera	localization.cc	/^					Array2D<double> _camera = ViewContext::Get().Camera();$/;"	l
 _camera	viewcontext.cc	/^		camstream >> _camera;$/;"	l
 _camera	viewcontext.hh	/^      Array2D<double> _camera;$/;"	m	class:textured_localization::ViewContext	access:private
-_cameraMatrix	localization.cc	/^	cout<<_cameraMatrix;$/;"	l
+_cameraMatrix	localization.cc	/^	cout << _cameraMatrix;$/;"	l
 _cameraMatrix	localization.cc	/^	cv::Mat _cameraMatrix, _distCoeffs;$/;"	l
 _cameraMatrix	localization.cc	/^	fs["camera_matrix"] >> _cameraMatrix;$/;"	l
 _cells	viewcontext.hh	/^      std::vector<BareCell> _cells;$/;"	m	class:textured_localization::ViewContext	access:private
@@ -1623,6 +1626,7 @@ best_im	simulated_robot_tracking.cc	/^      IplImage* best_im = ViewContext::Get
 best_pose	sensormodels.hh	/^	Pose best_pose() {$/;"	f	class:textured_localization::BestOrientationSensorModel	access:public
 best_prob	localization.cc	/^			double best_prob = 0;$/;"	l
 best_prob	sensormodels.hh	/^		double best_prob = 0.0;$/;"	l
+best_transform	localization.cc	/^						Array2D<double> best_transform =$/;"	l
 best_w	find_one.cc	/^  double best_w = -1;$/;"	l
 bhue	sensormodels.cc	/^	double ahue, asat, aval, bhue, bsat, bval;$/;"	l
 big	log_to_movie.cc	/^      IplImage* big = cvLoadImage(p.string().c_str());$/;"	l
@@ -1663,8 +1667,9 @@ cam_height	reference_cost.cc	/^      double cam_height = $/;"	l
 cam_height	simulated_robot_tracking.cc	/^      double cam_height = $/;"	l
 camera	viewcontext.cc	/^	Array2D<double> camera;$/;"	l
 camera	viewcontext.cc	/^	camerastream >> camera;$/;"	l
+camera_transform	localization.cc	/^								<< "\\n Camera_transform " << camera_transform;$/;"	l
+camera_transform	localization.cc	/^						Array2D<double> camera_transform = matmult($/;"	l
 camerastream	viewcontext.cc	/^	stringstream camerastream(config["camera"]);$/;"	p	file:
-camstream	localization.cc	/^					stringstream camstream(config["robot_cam"]);$/;"	p	file:
 camstream	viewcontext.cc	/^		stringstream camstream(config["robot_cam"]);$/;"	p	file:
 cdiv	TNT/jama_eig.h	/^   void cdiv(Real xr, Real xi, Real yr, Real yi) {$/;"	f	class:JAMA::Eigenvalue	access:private
 cdivi	TNT/jama_eig.h	/^   Real cdivr, cdivi;$/;"	m	class:JAMA::Eigenvalue	access:private
@@ -1769,9 +1774,9 @@ current_mean	sensormodels.cc	/^	double current_mean = cvAvg(im).val[0];$/;"	l
 cv	bayerize.cc	/^  OpenCVInterpolation cv;$/;"	l
 cv::KeyPoint::convert	localization.cc	/^					cv::KeyPoint::convert(keypoints_1, all_ref);$/;"	p	class:cv::KeyPoint	file:
 cv::KeyPoint::convert	localization.cc	/^					cv::KeyPoint::convert(keypoints_2, all_ren);$/;"	p	class:cv::KeyPoint	file:
-cv::Rodrigues	localization.cc	/^					cv::Rodrigues(rvec, R);$/;"	p	class:cv	file:
+cv::Rodrigues	localization.cc	/^						cv::Rodrigues(rvec, R);$/;"	p	class:cv	file:
 cv::drawMatches	localization.cc	/^					cv::drawMatches(ref_gray2, keypoints_1, ref_read,$/;"	p	class:cv	file:
-cv::solvePnP	localization.cc	/^					cv::solvePnP(map_pts, ref_pts, _cameraMatrix, _distCoeffs,$/;"	p	class:cv	file:
+cv::solvePnP	localization.cc	/^						cv::solvePnP(map_pts, ref_pts, _cameraMatrix,$/;"	p	class:cv	file:
 cvLoadImage	bit_variance.cc	/^    images.push_back(cvLoadImage(s.string().c_str(), CV_LOAD_IMAGE_GRAYSCALE));$/;"	p	file:
 cvnorm	sensormodels.cc	/^		double cvnorm = cvNorm(reference, reading, CV_L2, mask);$/;"	l
 d	TNT/jama_eig.h	/^      Real r,d;$/;"	l
@@ -1918,10 +1923,10 @@ endl	heatmap_rotation.cc	/^  cout << format("Min: %f Max: %f") % min % max << en
 endl	kvparser.cc	/^        cout << i << ": " << equal_split[i] << endl;$/;"	l
 endl	l2shower.cc	/^    cout << "Usage: bin\/l2shower <input> <ref> <output>" << endl;$/;"	l
 endl	linearize.cc	/^    cout << "Usage: .\/linearize <input file> <output file> [factor]" << endl;$/;"	l
+endl	localization.cc	/^						cout << "Our pose: " << rectified_pose << endl;$/;"	l
 endl	localization.cc	/^						cout << "Particle " << pidx << " floored!" << endl;$/;"	l
 endl	localization.cc	/^						cout << "Particle " << pidx << " is NAN!" << endl;$/;"	l
 endl	localization.cc	/^					<< endl;$/;"	l
-endl	localization.cc	/^					cout << "Our pose: " << rectified_pose << endl;$/;"	l
 endl	localization.cc	/^					cout << "Particle " << pidx << " NULLified!" << endl;$/;"	l
 endl	localization.cc	/^					cout << format("New best [%d]: P: %f") % pidx % prob << endl;$/;"	l
 endl	localization.cc	/^				cout << "BEST IS NULL" << endl;$/;"	l
@@ -2229,6 +2234,7 @@ ins	TNT/tnt_vec.h	/^        std::istringstream ins(s);$/;"	p
 interped	bayer.cc	/^  IplImage* interped = NULL;$/;"	l
 inverse	utilities.cc	/^TNT::Array2D<double> inverse(const TNT::Array2D<double>& A)$/;"	f	namespace:textured_localization
 invert	extended_tnt.hh	/^  Array2D<T> invert(const Array2D<T> &M)$/;"	f	namespace:TNT
+invert	localization.cc	/^								<< invert(world_to_camera);$/;"	p	file:
 isFullRank	TNT/jama_qr.h	/^	int isFullRank() const		$/;"	f	class:JAMA::QR	access:public
 isNonsingular	TNT/jama_lu.h	/^   int isNonsingular () {$/;"	f	class:JAMA::LU	access:public
 is_null	TNT/tnt_i_refvec.h	/^	inline  int is_null() const;$/;"	p	class:TNT::i_refvec	access:public
@@ -2352,7 +2358,7 @@ map	manual_trajectory.cc	/^    vector<BareCell> map;$/;"	l
 map	reference_cost.cc	/^    vector<BareCell> map;$/;"	l
 map	simulated_robot_tracking.cc	/^    vector<BareCell> map;$/;"	l
 map	viewmapslices.cc	/^  ifstream map(argv[1], ifstream::in);$/;"	p	file:
-map_pts	localization.cc	/^					std::vector<cv::Point3f> map_pts;$/;"	l
+map_pts	localization.cc	/^						std::vector<cv::Point3f> map_pts;$/;"	l
 mappath	viewer.cc	/^    bfs::path mappath(argv[1]);$/;"	p	file:
 mapstream	viewer.cc	/^    bfs::ifstream mapstream(mappath);$/;"	p	file:
 mask	sensormodel.cc	/^    IplImage* mask = $/;"	l
@@ -2853,7 +2859,7 @@ read	simulated_robot_tracking.cc	/^    int read = BareCell::ParseMapFile(argv[1]
 read_gray	coster.cc	/^  IplImage* read_gray = $/;"	l
 read_gray	sensormodels.cc	/^	IplImage* read_gray = cvCreateImage($/;"	l
 read_v	reference_cost.cc	/^          CvScalar read_v = cvGet2D(im, i, j);$/;"	l
-rectified_pose	localization.cc	/^					Pose rectified_pose(world_transform[0][3],$/;"	p	file:
+rectified_pose	localization.cc	/^						Pose rectified_pose = Pose(O[0][0], O[1][0], O[2][0],$/;"	l
 red	sensormodel.cc	/^    IplImage* red = $/;"	l
 ref	TNT/tnt_array1d.h	/^	inline   Array1D & ref(const Array1D &A);$/;"	p	class:TNT::Array1D	access:public
 ref	TNT/tnt_array2d.h	/^	inline Array2D & ref(const Array2D &A);$/;"	p	class:TNT::Array2D	access:public
@@ -2975,7 +2981,7 @@ rr	barecell.cc	/^    int rr, gg, bb;$/;"	l
 rr	viewmapslices.cc	/^      double rr, gg, bb, pcc;$/;"	l
 running	TNT/tnt_stopwatch.h	/^		inline int running();$/;"	p	class:TNT::Stopwatch	access:public
 running_	TNT/tnt_stopwatch.h	/^        int running_;$/;"	m	class:TNT::Stopwatch	access:private
-rvec	localization.cc	/^					cv::Mat rvec, tvec;$/;"	l
+rvec	localization.cc	/^						cv::Mat rvec, tvec;$/;"	l
 rx	viewmapslices.cc	/^  double rx, ry, rz;$/;"	l
 ry	viewmapslices.cc	/^  double rx, ry, rz;$/;"	l
 rz	viewmapslices.cc	/^  double rx, ry, rz;$/;"	l
@@ -3064,7 +3070,7 @@ solve	TNT/jama_lu.h	/^   Array1D<Real> solve (const Array1D<Real> &b) $/;"	f	cla
 solve	TNT/jama_lu.h	/^   Array2D<Real> solve (const Array2D<Real> &B) $/;"	f	class:JAMA::LU	access:public
 solve	TNT/jama_qr.h	/^   TNT::Array1D<Real> solve(const TNT::Array1D<Real> &b) const$/;"	f	class:JAMA::QR	access:public
 solve	TNT/jama_qr.h	/^   TNT::Array2D<Real> solve(const TNT::Array2D<Real> &B) const$/;"	f	class:JAMA::QR	access:public
-solvePnP	localization.cc	/^					cv::solvePnP(map_pts, ref_pts, _cameraMatrix, _distCoeffs,$/;"	p	class:cv	file:
+solvePnP	localization.cc	/^						cv::solvePnP(map_pts, ref_pts, _cameraMatrix,$/;"	p	class:cv	file:
 sp	TNT/jama_svd.h	/^               Real sp = s[p-1]\/scale;$/;"	l
 sparsemap	heatmap.cc	/^  SparseMap sparsemap(map);$/;"	p	file:
 sparsemap	heatmap_rotation.cc	/^  SparseMap sparsemap(map);$/;"	p	file:
@@ -3983,7 +3989,8 @@ truth	simulated_robot_tracking.cc	/^    vector<Pose> truth;$/;"	l
 truth2	simulated_robot_tracking.cc	/^      Pose truth2 = truth.at(step);$/;"	l
 tst1	TNT/jama_eig.h	/^      Real tst1 = 0.0;$/;"	l
 tv	localization.cc	/^		struct timeval tv;$/;"	l
-tvec	localization.cc	/^					cv::Mat rvec, tvec;$/;"	l
+tvec	localization.cc	/^						cout << R << "\\n\\n" << tvec;$/;"	l
+tvec	localization.cc	/^						cv::Mat rvec, tvec;$/;"	l
 two	l2shower.cc	/^  IplImage* two = cvLoadImage(argv[2]);$/;"	l
 two	rectify_riegl.py	/^  two = parse_input(sys.argv[2])$/;"	v
 uncertain	localization.cc	/^				bool uncertain = false;$/;"	l
@@ -4049,7 +4056,7 @@ winZ	viewcontext.cc	/^		GLfloat winX, winY, winZ;$/;"	l
 window	sorted_viewer.cc	/^const char* window = "Sorted Images";$/;"	v
 windowname	viewmapslices.cc	/^char* windowname;$/;"	v
 work	TNT/jama_svd.h	/^      Array1D<Real> work(m);$/;"	p
-world_transform	localization.cc	/^					Array2D<double> world_transform;$/;"	l
+world_transform	localization.cc	/^						Array2D<double> world_transform;$/;"	l
 worst	find_one.cc	/^  size_t worst = 0;$/;"	l
 worst_w	find_one.cc	/^  double worst_w = 10;$/;"	l
 writeImage	pgm.cc	/^void writeImage(char * filename, unsigned char* image, int width, int height)$/;"	f

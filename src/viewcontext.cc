@@ -391,6 +391,16 @@ void ViewContext::Get3Dfrom2D(std::vector<cv::Point2f> in_pts,
 		gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX,
 				&posY, &posZ);
 		cv::Point3f out_pt(posX, posY, posZ);
+
+//		//Now transform this point back in to the camera frame
+//		Array2D<double> O = Origin<double>();
+//		O[1][0] = posX;
+//		O[2][0] = posY;
+//		O[3][0] = posZ;
+//
+//		Array2D<double> transform = matmult(invert(matmult(_robot, _camera)), O);
+//
+//		cv::Point3f out_pt(transform[1][0], transform[2][0],transform[3][0]);
 		out_pts.push_back(out_pt);
 	}
 }
