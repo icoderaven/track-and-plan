@@ -75,12 +75,13 @@ double CalculateNeff(const vector<Particle>& filter) {
 
 /* Go cat go. */
 int main(int argc, char* argv[]) {
-	bool _use_features;
+	bool _use_features = true;
 	//@Us Read the camera calibration matrix that we found from the interwebz
 	cv::FileStorage fs("camera.yaml", cv::FileStorage::READ);
 	cv::Mat _cameraMatrix, _distCoeffs;
-	fs["cameraMatrix"]>>_cameraMatrix;
-	fs["distCoeffs"]>>_distCoeffs;
+	fs["camera_matrix"] >> _cameraMatrix;
+	fs["distortion_coefficients"] >> _distCoeffs;
+	cout<<_cameraMatrix;
 	try {
 		if (argc < 6 || argc > 7)
 			PrintUsageAndDie();
@@ -203,7 +204,7 @@ int main(int argc, char* argv[]) {
 				ViewContext::Get().height());
 		L2SensorModel L2S(10, false);
 		NormalizedL2SensorModel NL2S(10);
-		PerChannelNormalizedL2SensorModel PCNL2S(0.5, true);
+		PerChannelNormalizedL2SensorModel PCNL2S(0.5, _use_features);
 		L2HueSensorModel HS(5000);
 		L1HueSensorModel L1HS(ViewContext::Get().width(),
 				ViewContext::Get().height());
@@ -468,17 +469,18 @@ int main(int argc, char* argv[]) {
 				cv::SurfFeatureDetector detector(minHessian);
 
 				std::vector<cv::KeyPoint> keypoints_1, keypoints_2;
-				//		cv::Mat ref_gray, ref_read;
-
+				//		cv::Mat ref_gray2, ref_read;
+				IplImage* ref_gray2 = cvCreateImage(
+								cvSize(reference->width, reference->height), IPL_DEPTH_8U, 1);
 				IplImage* ref_read = cvCreateImage(
-						cvSize(best->width, best->height), IPL_DEPTH_8U,
-						1);
+						cvSize(best->width, best->height), IPL_DEPTH_8U, 1);
 				cvCvtColor(best, ref_read, CV_BGR2GRAY);
+				cvCvtColor(reference, ref_gray2, CV_BGR2GRAY);
 
-				//		cv::cvtColor(cv::Mat(reference), ref_gray, CV_BGR2GRAY);
+				//		cv::cvtColor(cv::Mat(reference), ref_gray2, CV_BGR2GRAY);
 				//		cv::cvtColor(cv::Mat(best), ref_read, CV_BGR2GRAY);
 
-				detector.detect(ref_gray, keypoints_1);
+				detector.detect(ref_gray2, keypoints_1);
 				detector.detect(ref_read, keypoints_2);
 
 				//-- Step 2: Calculate descriptors (feature vectors)
@@ -486,11 +488,11 @@ int main(int argc, char* argv[]) {
 
 				cv::Mat descriptors_1, descriptors_2;
 
-				extractor.compute(ref_gray, keypoints_1, descriptors_1);
+				extractor.compute(ref_gray2, keypoints_1, descriptors_1);
 				extractor.compute(ref_read, keypoints_2, descriptors_2);
 
 				//-- Step 3: Matching descriptor vectors using FLANN matcher
-				std::cout << keypoints_2.size() << "\n";
+				std::cout << keypoints_1.size() << keypoints_2.size() << "\n";
 				if (keypoints_1.size() != 0 && keypoints_2.size() != 0) {
 					cv::FlannBasedMatcher matcher;
 					std::vector<cv::DMatch> matches;
@@ -521,7 +523,7 @@ int main(int argc, char* argv[]) {
 
 					// --- Step 4: Display theees image
 					cv::Mat matches_img;
-					cv::drawMatches(ref_gray, keypoints_1, ref_read,
+					cv::drawMatches(ref_gray2, keypoints_1, ref_read,
 							keypoints_2, good_matches, matches_img,
 							cv::Scalar::all(-1), cv::Scalar::all(-1),
 							vector<char>(),
@@ -535,8 +537,9 @@ int main(int argc, char* argv[]) {
 					//store the point matches in the keypoints struct in these vectors
 					cv::KeyPoint::convert(keypoints_1, all_ref);
 					cv::KeyPoint::convert(keypoints_2, all_ren);
-					for(std::vector<cv::DMatch>::iterator it = good_matches.begin();
-							it != good_matches.end(); ++it){
+					for (std::vector<cv::DMatch>::iterator it =
+							good_matches.begin(); it != good_matches.end();
+							++it) {
 						ref_pts.push_back(all_ref[it->trainIdx]);
 						ren_pts.push_back(all_ren[it->queryIdx]);
 					}
@@ -548,21 +551,30 @@ int main(int argc, char* argv[]) {
 					//@todo use current pose estimate to speed things up/optimize
 //					cv::Mat cam = "0.9795 0.0940 0.1780 85.8394 -0.0097 0.9053 -0.4246 -33.9370 -0.2010 0.4141 0.8877 138.1021 0 0 0 1";
 
-					cv::solvePnP(map_pts, ref_pts, _cameraMatrix, _distCoeffs ,rvec, tvec);
+					cv::solvePnP(map_pts, ref_pts, _cameraMatrix, _distCoeffs,
+							rvec, tvec);
+
 					cv::Mat R;
 					cv::Rodrigues(rvec, R);
 					cv::Mat T(4, 4, R.type());
-					T( cv::Range(0,3), cv::Range(0,3) ) = R * 1; // copies R into T
-					T( cv::Range(0,3), cv::Range(3,4) ) = tvec * 1; // copies tvec into T
-					Array2D<double> world_to_camera(4,4, T) ;
+					T(cv::Range(0, 3), cv::Range(0, 3)) = R * 1; // copies R into T
+					T(cv::Range(0, 3), cv::Range(3, 4)) = tvec * 1; // copies tvec into T
+					Array2D<double> world_to_camera(4, 4, (double*) T.data);
 					//This is a transformation from the world to camera. We need to chain it with camera to robot to get world to robot
-					Array2D<double> _camera(4,4);
+					Array2D<double> _camera(4, 4);
 					stringstream camstream(config["robot_cam"]);
 					camstream >> _camera;
 					//This is from robot to camera, therefore we need to invert this transformation
-					Pose rectified_pose = matmult(world_to_camera, invert(_camera));
+					Array2D<double> world_transform;
+					world_transform = matmult(world_to_camera, invert(_camera));
+					Pose rectified_pose(world_transform[0][3],
+							world_transform[1][3], world_transform[2][3],
+							atan2(world_transform[0][1],
+									world_transform[1][1]));
 					//Whew, print this out
 					cout << "Our pose: " << rectified_pose << endl;
+				} else {
+					cout << "\nmummmmmmmmmmmmmmmmmmmmmmmmy!!!!!!!!!";
 				}
 			}
 

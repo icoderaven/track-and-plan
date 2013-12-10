@@ -366,7 +366,7 @@ IplImage* ViewContext::Render() {
 }
 
 //@Us : Create a function to return corresponding 3D points from requested 2D points
-void Get3Dfrom2D(std::vector<cv::Point2f> in_pts,
+void ViewContext::Get3Dfrom2D(std::vector<cv::Point2f> in_pts,
 		std::vector<cv::Point3f> &out_pts) {
 	//Clear out_pts
 	out_pts.clear();
