@@ -633,6 +633,7 @@ PlusZ	viewcontext.cc	/^		ViewContext::Get().GenericTranslate(PlusZ<double>(), -1
 PlusZ	viewcontext.cc	/^		ViewContext::Get().GenericTranslate(PlusZ<double>(), -10);$/;"	p	file:
 PlusZ	viewcontext.cc	/^		ViewContext::Get().GenericTranslate(PlusZ<double>(), 1);$/;"	p	file:
 PlusZ	viewcontext.cc	/^		ViewContext::Get().GenericTranslate(PlusZ<double>(), 10);$/;"	p	file:
+Point2f	localization.cc	/^								indices.push_back(cv::Point2f(j, i));$/;"	p	file:
 Pose	extract_trajectory.cc	/^      actions.push_back(Pose(SCALE * x, SCALE * y, z0, t));$/;"	p	file:
 Pose	extract_trajectory.cc	/^  actions.push_back(Pose(x0, y0, z0, offset));$/;"	p	file:
 Pose	find_one.cc	/^    ViewContext::Get().SetPose(Pose(x0, y0, z0, radians(51)));$/;"	p	file:
@@ -1449,7 +1450,6 @@ _best_pose	sensormodels.hh	/^	Pose _best_pose;$/;"	m	class:textured_localization
 _bucketsize	sensormodels.hh	/^	int _bucketsize;$/;"	m	class:textured_localization::MutualInformationSensorModel	access:private
 _camera	viewcontext.cc	/^		camstream >> _camera;$/;"	l
 _camera	viewcontext.hh	/^      Array2D<double> _camera;$/;"	m	class:textured_localization::ViewContext	access:private
-_cameraMatrix	localization.cc	/^						cout<<_cameraMatrix;$/;"	l
 _cameraMatrix	localization.cc	/^	cout << _cameraMatrix;$/;"	l
 _cameraMatrix	localization.cc	/^	cv::Mat _cameraMatrix, _distCoeffs;$/;"	l
 _cameraMatrix	localization.cc	/^	fs["camera_matrix"] >> _cameraMatrix;$/;"	l
@@ -1689,12 +1689,14 @@ cellx	manual_trajectory.cc	/^    double cellx, celly, cellz = 0.0;$/;"	l
 celly	manual_trajectory.cc	/^    double cellx, celly, cellz = 0.0;$/;"	l
 cellz	manual_trajectory.cc	/^    double cellx, celly, cellz = 0.0;$/;"	l
 centered_total	bit_variance.cc	/^  double centered_total = 0;$/;"	l
+clear	localization.cc	/^						indices.clear();$/;"	p	file:
 clear	simulated_robot_tracking.cc	/^      new_filter.clear();$/;"	p	file:
 clear	viewcontext.cc	/^	Get()._cells.clear();$/;"	p	file:
 clear	viewcontext.cc	/^	out_pts.clear();$/;"	p	file:
 close	extract_trajectory.cc	/^  logfile.close();$/;"	p	file:
 close	extract_trajectory.cc	/^  map.close();$/;"	p	file:
 close	heatmap.cc	/^  heatmap_out.close();$/;"	p	file:
+close	localization.cc	/^						outfile.close();$/;"	p	file:
 close	matrix_examiner.cc	/^  Min.close();$/;"	p	file:
 close	viewer.cc	/^    mapstream.close();$/;"	p	file:
 coff	heatmap.cc	/^      int coff = c - (SIZE\/2);$/;"	l
@@ -1780,7 +1782,7 @@ cv::KeyPoint::convert	localization.cc	/^					cv::KeyPoint::convert(keypoints_2, 
 cv::Rodrigues	localization.cc	/^						cv::Rodrigues(R_init, rvec);$/;"	p	class:cv	file:
 cv::Rodrigues	localization.cc	/^						cv::Rodrigues(rvec, R);$/;"	p	class:cv	file:
 cv::drawMatches	localization.cc	/^					cv::drawMatches(ref_gray2, keypoints_1, ref_read,$/;"	p	class:cv	file:
-cv::solvePnP	localization.cc	/^						cv::solvePnP(map_pts, ref_pts, _cameraMatrix,$/;"	p	class:cv	file:
+cv::solvePnP	localization.cc	/^						cv::solvePnP(map_pts, indices, _cameraMatrix,$/;"	p	class:cv	file:
 cvLoadImage	bit_variance.cc	/^    images.push_back(cvLoadImage(s.string().c_str(), CV_LOAD_IMAGE_GRAYSCALE));$/;"	p	file:
 cvnorm	sensormodels.cc	/^		double cvnorm = cvNorm(reference, reading, CV_L2, mask);$/;"	l
 d	TNT/jama_eig.h	/^      Real r,d;$/;"	l
@@ -1928,11 +1930,14 @@ endl	kvparser.cc	/^        cout << i << ": " << equal_split[i] << endl;$/;"	l
 endl	l2shower.cc	/^    cout << "Usage: bin\/l2shower <input> <ref> <output>" << endl;$/;"	l
 endl	linearize.cc	/^    cout << "Usage: .\/linearize <input file> <output file> [factor]" << endl;$/;"	l
 endl	localization.cc	/^								<< endl;$/;"	l
+endl	localization.cc	/^						cout << "CAMERA MATRIX" << _cameraMatrix << endl;$/;"	l
 endl	localization.cc	/^						cout << "Our pose: " << rectified_pose << endl;$/;"	l
 endl	localization.cc	/^						cout << "Particle " << pidx << " floored!" << endl;$/;"	l
 endl	localization.cc	/^						cout << "Particle " << pidx << " is NAN!" << endl;$/;"	l
 endl	localization.cc	/^						cout << "R_init " << R_init << endl;$/;"	l
 endl	localization.cc	/^						cout << "tvec " << tvec << endl;$/;"	l
+endl	localization.cc	/^						cout<<" Indices "<<indices[200]<<endl;$/;"	l
+endl	localization.cc	/^						cout<<"MAP points at 6000"<<map_pts[200]<<endl;$/;"	l
 endl	localization.cc	/^					<< endl;$/;"	l
 endl	localization.cc	/^					cout << "Particle " << pidx << " NULLified!" << endl;$/;"	l
 endl	localization.cc	/^					cout << format("New best [%d]: P: %f") % pidx % prob << endl;$/;"	l
@@ -2172,6 +2177,8 @@ i	TNT/tnt_cmat.h	/^        Subscript i;$/;"	l
 i	TNT/tnt_vec.h	/^        Subscript i;$/;"	l
 i	bit_variance.cc	/^    bfs::path filename(str(format("%s%d.jpg") % argv[2] % i));$/;"	l
 i	kvparser.cc	/^  map<string, string>::iterator i = _map.find(idx);$/;"	l
+i	localization.cc	/^							outfile << *i << '\\n';$/;"	l
+i	localization.cc	/^						ss<<i;$/;"	l
 i	viewcontext.cc	/^	int i = 0;$/;"	l
 i	viewmapslices.cc	/^      fname << argv[2] << "-" << i << ".png";$/;"	l
 i_refvec	TNT/tnt_i_refvec.h	/^			 i_refvec();$/;"	p	class:TNT::i_refvec	access:public
@@ -2221,6 +2228,7 @@ ims	viewmapslices.cc	/^vector<CvMat*>* ims = NULL;$/;"	v
 in	color_conversion_test.cc	/^  IplImage* in = cvLoadImage(argv[2]);$/;"	l
 in	linearize.cc	/^  IplImage* in = cvLoadImage(argv[1]);$/;"	l
 index	sorted_viewer.cc	/^    int index;$/;"	l
+indices	localization.cc	/^						std::vector<cv::Point2f> indices;$/;"	l
 infile	pgm.cc	/^  FILE *infile;$/;"	l
 initialize	TNT/tnt_cmat.h	/^    void initialize(Subscript M, Subscript N)$/;"	f	class:TNT::Matrix	access:protected
 initialize	TNT/tnt_vec.h	/^    void initialize(Subscript N)$/;"	f	class:TNT::Vector	access:protected
@@ -2419,7 +2427,7 @@ minx	barecell.cc	/^  int minx, maxx, miny, maxy, minz, maxz;$/;"	l
 miny	barecell.cc	/^  int minx, maxx, miny, maxy, minz, maxz;$/;"	l
 minz	barecell.cc	/^  int minx, maxx, miny, maxy, minz, maxz;$/;"	l
 mn_	TNT/tnt_cmat.h	/^    Subscript mn_;      \/\/ total size$/;"	m	class:TNT::Matrix	access:protected
-modelview	viewcontext.cc	/^		GLdouble modelview[16];$/;"	l
+modelview	viewcontext.cc	/^	GLdouble modelview[16];$/;"	l
 moveC	austinmotionmodel.cc	/^  double moveC = moveT + (M_PI \/ 2);$/;"	l
 moveT	austinmotionmodel.cc	/^  double moveT = ((old_facing + randomT) + old_facing) \/ 2.0;$/;"	l
 moveX	austinmotionmodel.cc	/^  double moveX = (randomD * cos(moveT)) + (randomC * cos(moveC));$/;"	l
@@ -2690,6 +2698,7 @@ orig_pose	sensormodels.hh	/^		Pose orig_pose = ViewContext::Get().pose();$/;"	l
 ort	TNT/jama_eig.h	/^   TNT::Array1D<Real> ort;$/;"	m	class:JAMA::Eigenvalue	access:private
 orthes	TNT/jama_eig.h	/^   void orthes () {$/;"	f	class:JAMA::Eigenvalue	access:private
 out_pt	viewcontext.cc	/^		cv::Point3f out_pt(posX, posY, posZ);$/;"	p	file:
+outfile	localization.cc	/^						ofstream outfile(ss.str(), ios::out);$/;"	p	file:
 outlog	undistort_images.py	/^outlog = log.NewLog(sys.argv[2], True) # second arg clobbers the output!$/;"	v
 output	rectify_riegl.py	/^    output = file(sys.argv[3], 'w')$/;"	v
 output	rectify_riegl.py	/^    output = sys.stdout$/;"	v
@@ -2753,9 +2762,9 @@ pop_back	add_trajectory_to_map.cc	/^        traj.pop_back();$/;"	p	file:
 pop_back	sorted_viewer.cc	/^      pairs.pop_back();$/;"	p	file:
 pop_front	log_to_movie.cc	/^    image_names.pop_front();  \/\/ '6', usually$/;"	p	file:
 pop_front	log_to_movie.cc	/^    image_names.pop_front();  \/\/ Camera: $/;"	p	file:
-posX	viewcontext.cc	/^		GLdouble posX, posY, posZ;$/;"	l
-posY	viewcontext.cc	/^		GLdouble posX, posY, posZ;$/;"	l
-posZ	viewcontext.cc	/^		GLdouble posX, posY, posZ;$/;"	l
+posX	viewcontext.cc	/^	GLdouble posX, posY, posZ;$/;"	l
+posY	viewcontext.cc	/^	GLdouble posX, posY, posZ;$/;"	l
+posZ	viewcontext.cc	/^	GLdouble posX, posY, posZ;$/;"	l
 pose	particle.cc	/^Pose Particle::pose() const$/;"	f	class:textured_localization::Particle
 pose	particle.hh	/^      Pose pose() const;$/;"	p	class:textured_localization::Particle	access:public
 pose	viewcontext.cc	/^Pose ViewContext::pose() const {$/;"	f	class:textured_localization::ViewContext
@@ -2774,7 +2783,8 @@ prob	sorted_viewer.cc	/^    double prob;$/;"	m	class:MyPair	file:	access:public
 prob_best	heatmap.cc	/^  double prob_best = 0.0;$/;"	l
 prob_best	heatmap_rotation.cc	/^  double prob_best = 0.0;$/;"	l
 probe	coster.cc	/^  IplImage* probe = cvLoadImage(argv[2]);$/;"	l
-projection	viewcontext.cc	/^		GLdouble projection[16];$/;"	l
+projection	viewcontext.cc	/^	GLdouble projection[16];$/;"	l
+projection	viewcontext.cc	/^	cout<<"ASDASDASDASD"<<viewport<<"\\n"<<modelview<<"\\n"<<projection;$/;"	l
 push_back	add_trajectory_to_map.cc	/^      traj.push_back(p);$/;"	p	file:
 push_back	add_trajectory_to_map.cc	/^    trajectories.push_back(traj);$/;"	p	file:
 push_back	austinmotionmodel.cc	/^  res.push_back(moveX);$/;"	p	file:
@@ -3083,7 +3093,7 @@ solve	TNT/jama_lu.h	/^   Array1D<Real> solve (const Array1D<Real> &b) $/;"	f	cla
 solve	TNT/jama_lu.h	/^   Array2D<Real> solve (const Array2D<Real> &B) $/;"	f	class:JAMA::LU	access:public
 solve	TNT/jama_qr.h	/^   TNT::Array1D<Real> solve(const TNT::Array1D<Real> &b) const$/;"	f	class:JAMA::QR	access:public
 solve	TNT/jama_qr.h	/^   TNT::Array2D<Real> solve(const TNT::Array2D<Real> &B) const$/;"	f	class:JAMA::QR	access:public
-solvePnP	localization.cc	/^						cv::solvePnP(map_pts, ref_pts, _cameraMatrix,$/;"	p	class:cv	file:
+solvePnP	localization.cc	/^						cv::solvePnP(map_pts, indices, _cameraMatrix,$/;"	p	class:cv	file:
 sp	TNT/jama_svd.h	/^               Real sp = s[p-1]\/scale;$/;"	l
 sparsemap	heatmap.cc	/^  SparseMap sparsemap(map);$/;"	p	file:
 sparsemap	heatmap_rotation.cc	/^  SparseMap sparsemap(map);$/;"	p	file:
@@ -3103,6 +3113,7 @@ ss	color_conversion_test.cc	/^  stringstream ss(config["color_conversion"]);$/;"
 ss	extract_trajectory.cc	/^    stringstream ss(line);$/;"	p	file:
 ss	heatmap.cc	/^  stringstream ss(config["color_conversion"]);$/;"	p	file:
 ss	heatmap_rotation.cc	/^  stringstream ss(config["color_conversion"]);$/;"	p	file:
+ss	localization.cc	/^						stringstream ss;$/;"	l
 ss	localization.cc	/^			stringstream ss(config["color_conversion"]);$/;"	p	file:
 ss	localization.cc	/^			stringstream ss(line);$/;"	p	file:
 ss	sorted_viewer.cc	/^    stringstream ss(line);$/;"	p	file:
@@ -3775,7 +3786,7 @@ textured_localization::minimum_element	utilities.hh	/^  double minimum_element(I
 textured_localization::minx	barecell.cc	/^  int minx, maxx, miny, maxy, minz, maxz;$/;"	l
 textured_localization::miny	barecell.cc	/^  int minx, maxx, miny, maxy, minz, maxz;$/;"	l
 textured_localization::minz	barecell.cc	/^  int minx, maxx, miny, maxy, minz, maxz;$/;"	l
-textured_localization::modelview	viewcontext.cc	/^		GLdouble modelview[16];$/;"	l
+textured_localization::modelview	viewcontext.cc	/^	GLdouble modelview[16];$/;"	l
 textured_localization::moveC	austinmotionmodel.cc	/^  double moveC = moveT + (M_PI \/ 2);$/;"	l
 textured_localization::moveT	austinmotionmodel.cc	/^  double moveT = ((old_facing + randomT) + old_facing) \/ 2.0;$/;"	l
 textured_localization::moveX	austinmotionmodel.cc	/^  double moveX = (randomD * cos(moveT)) + (randomC * cos(moveC));$/;"	l
@@ -3814,10 +3825,11 @@ textured_localization::pbb	particle_visualizer.cc	/^  vector<double> pbb = Pose:
 textured_localization::pc	barecell.cc	/^  vector<double> pc;$/;"	l
 textured_localization::pcc	barecell.cc	/^    double pcc;$/;"	l
 textured_localization::pcc	barecell.cc	/^    in >> rr >> gg >> bb >> pcc;$/;"	l
-textured_localization::posX	viewcontext.cc	/^		GLdouble posX, posY, posZ;$/;"	l
-textured_localization::posY	viewcontext.cc	/^		GLdouble posX, posY, posZ;$/;"	l
-textured_localization::posZ	viewcontext.cc	/^		GLdouble posX, posY, posZ;$/;"	l
-textured_localization::projection	viewcontext.cc	/^		GLdouble projection[16];$/;"	l
+textured_localization::posX	viewcontext.cc	/^	GLdouble posX, posY, posZ;$/;"	l
+textured_localization::posY	viewcontext.cc	/^	GLdouble posX, posY, posZ;$/;"	l
+textured_localization::posZ	viewcontext.cc	/^	GLdouble posX, posY, posZ;$/;"	l
+textured_localization::projection	viewcontext.cc	/^	GLdouble projection[16];$/;"	l
+textured_localization::projection	viewcontext.cc	/^	cout<<"ASDASDASDASD"<<viewport<<"\\n"<<modelview<<"\\n"<<projection;$/;"	l
 textured_localization::push_back	austinmotionmodel.cc	/^  res.push_back(moveX);$/;"	p	file:
 textured_localization::push_back	austinmotionmodel.cc	/^  res.push_back(moveY);$/;"	p	file:
 textured_localization::push_back	austinmotionmodel.cc	/^  res.push_back(randomT);$/;"	p	file:
@@ -3935,15 +3947,15 @@ textured_localization::total	sensormodels.cc	/^	double total = 0.0;$/;"	l
 textured_localization::up	sparsemap.cc	/^  bool up = false;$/;"	l
 textured_localization::valid_pixels	sensormodels.cc	/^	int valid_pixels = reading->width * reading->height;$/;"	l
 textured_localization::vc	viewcontext.cc	/^	static ViewContext vc;$/;"	l	file:
-textured_localization::viewport	viewcontext.cc	/^		GLint viewport[4];$/;"	l
+textured_localization::viewport	viewcontext.cc	/^	GLint viewport[4];$/;"	l
 textured_localization::vnorm	viewcontext.cc	/^		double vnorm = norm(vx, vy, vz);$/;"	l
 textured_localization::vx	viewcontext.cc	/^		double vx = b->x() + 0.5 - TO[0][0];$/;"	l
 textured_localization::vy	viewcontext.cc	/^		double vy = b->y() + 0.5 - TO[1][0];$/;"	l
 textured_localization::vz	viewcontext.cc	/^		double vz = b->z() + 0.5 - TO[2][0];$/;"	l
 textured_localization::white	sensormodels.cc	/^	IplImage* white = cvCloneImage(black);$/;"	l
-textured_localization::winX	viewcontext.cc	/^		GLfloat winX, winY, winZ;$/;"	l
-textured_localization::winY	viewcontext.cc	/^		GLfloat winX, winY, winZ;$/;"	l
-textured_localization::winZ	viewcontext.cc	/^		GLfloat winX, winY, winZ;$/;"	l
+textured_localization::winX	viewcontext.cc	/^	GLfloat winX, winY, winZ;$/;"	l
+textured_localization::winY	viewcontext.cc	/^	GLfloat winX, winY, winZ;$/;"	l
+textured_localization::winZ	viewcontext.cc	/^	GLfloat winX, winY, winZ;$/;"	l
 textured_localization::x	barecell.cc	/^  int x, y, z, h;$/;"	l
 textured_localization::x	pose.cc	/^  double x, y, z, theta;$/;"	l
 textured_localization::xmax	pose.cc	/^  double xmin, ymin, xmax, ymax;$/;"	l
@@ -4044,7 +4056,7 @@ vc	viewcontext.cc	/^	static ViewContext vc;$/;"	l	file:
 vector	bit_variance.cc	/^      temp.push_back(vector<int>());$/;"	p	file:
 vi	TNT/jama_eig.h	/^               Real ra,sa,vr,vi;$/;"	l
 vidx	bayer.cc	/^  int vidx = 0;$/;"	l
-viewport	viewcontext.cc	/^		GLint viewport[4];$/;"	l
+viewport	viewcontext.cc	/^	GLint viewport[4];$/;"	l
 vm1_	TNT/tnt_cmat.h	/^    T* vm1_ ;       \/\/ these point to the same data, but are 1-based $/;"	m	class:TNT::Matrix	access:protected
 vm1_	TNT/tnt_vec.h	/^    T* vm1_;        \/\/ pointer adjustment for optimzied 1-offset indexing$/;"	m	class:TNT::Vector	access:protected
 vnorm	viewcontext.cc	/^		double vnorm = norm(vx, vy, vz);$/;"	l
@@ -4062,9 +4074,9 @@ width	bayerize.cc	/^  int width = 1600;$/;"	l
 width	log_to_movie.cc	/^const int width = 1600 \/ 6;$/;"	v
 width	viewcontext.cc	/^int ViewContext::width() const {$/;"	f	class:textured_localization::ViewContext
 width	viewcontext.hh	/^      int width() const;$/;"	p	class:textured_localization::ViewContext	access:public
-winX	viewcontext.cc	/^		GLfloat winX, winY, winZ;$/;"	l
-winY	viewcontext.cc	/^		GLfloat winX, winY, winZ;$/;"	l
-winZ	viewcontext.cc	/^		GLfloat winX, winY, winZ;$/;"	l
+winX	viewcontext.cc	/^	GLfloat winX, winY, winZ;$/;"	l
+winY	viewcontext.cc	/^	GLfloat winX, winY, winZ;$/;"	l
+winZ	viewcontext.cc	/^	GLfloat winX, winY, winZ;$/;"	l
 window	sorted_viewer.cc	/^const char* window = "Sorted Images";$/;"	v
 windowname	viewmapslices.cc	/^char* windowname;$/;"	v
 work	TNT/jama_svd.h	/^      Array1D<Real> work(m);$/;"	p

@@ -109,7 +109,10 @@ int main(int argc, char* argv[]) {
 		}
 		double SCALEFACTOR = atof(config["scalefactor"].c_str());
 		cout << "Scalefactor is: " << SCALEFACTOR << endl;
+		_cameraMatrix.at<double>(2, 2) = _cameraMatrix.at<double>(2, 2)
+				/ SCALEFACTOR;
 
+		_cameraMatrix = _cameraMatrix / _cameraMatrix.at<double>(2, 2);
 		// And get the motion model, too.
 		AustinMotionModel MM(config);
 
@@ -262,6 +265,7 @@ int main(int argc, char* argv[]) {
 				filter.push_back(
 						Particle(Pose(3955.69, 4366.25, 4072.03, 2.11185),
 								1.0));
+
 				// Handmade ground truth for the "new" hallway dataset.
 //          filter.push_back(
 //              Particle(Pose(4257.74, 4315.17, 4071.96, 2.09438), 1.0));
@@ -308,6 +312,7 @@ int main(int argc, char* argv[]) {
 					cvSize((int) (reference_big->width * SCALEFACTOR),
 							(int) (reference_big->height * SCALEFACTOR)),
 					reference_big->depth, reference_big->nChannels);
+
 			cvResize(reference_big, reference);
 			cvReleaseImage(&reference_big);
 			// Re-color it.
@@ -554,12 +559,14 @@ int main(int argc, char* argv[]) {
 						cv::Mat rvec;
 						//@todo use current pose estimate to speed things up/optimize
 						//cv::Mat cam = "0.9795 0.0940 0.1780 85.8394 -0.0097 0.9053 -0.4246 -33.9370 -0.2010 0.4141 0.8877 138.1021 0 0 0 1";
-//						std::vector<cv::Point2f> indices;
-//						for (int i = 0; i < ref_gray2->height; i++) {
-//							for (int j = 0; j < ref_gray2->width; j++) {
-//								indices.push_back(cv::Point2f(j, i));
-//							}
-//						}
+						std::vector<cv::Point2f> indices;
+						indices.clear();
+						for (int i = 0; i < ref_gray2->height; i++) {
+							for (int j = 0; j < ref_gray2->width; j++) {
+								indices.push_back(cv::Point2f(j, i));
+							}
+						}
+						cout<<" Indices "<<indices[200]<<endl;
 //						Array2D<double> _camera = ViewContext::Get().Camera();
 //						Array2D<double> _camera(4, 4);
 //						stringstream camstream(config["robot_cam"]);
@@ -599,18 +606,16 @@ int main(int argc, char* argv[]) {
 						cout << "\n\n\n\n";
 						cv::Rodrigues(R_init, rvec);
 
-						ViewContext::Get().Get3Dfrom2D(ren_pts, map_pts);
+						ViewContext::Get().Get3Dfrom2D(indices, map_pts);
 
-						_cameraMatrix.at<double>(2,2) = _cameraMatrix.at<double>(2,2)/SCALEFACTOR;
-
-						_cameraMatrix = _cameraMatrix/_cameraMatrix.at<double>(2,2);
-						cout<<_cameraMatrix;
+						cout << "CAMERA MATRIX" << _cameraMatrix << endl;
 
 						/**********
 						 * SOLVEPNP
 						 */
-						cv::solvePnP(map_pts, ref_pts, _cameraMatrix,
-								_distCoeffs, rvec, tvec, true, CV_EPNP);
+						cout<<"MAP points at 6000"<<map_pts[200]<<endl;
+						cv::solvePnP(map_pts, indices, _cameraMatrix,
+								_distCoeffs, rvec, tvec, true,CV_EPNP);
 
 						cv::Mat R;
 						cv::Rodrigues(rvec, R);
@@ -636,10 +641,12 @@ int main(int argc, char* argv[]) {
 //									world_transform[1][1]));
 						stringstream s;
 //						s<< "4 4 0.2059   -0.7564   -0.6208 0  -0.2706    0.5657   -0.7790 0  0.9405    0.3283   -0.0882 0  0 0 0 1";
-						s<<"4 4 -0.2011   -0.9796    0.0097 0  0.4142   -0.0940   -0.9054 0  0.8878   -0.1780    0.4246 0 0 0 0 1";
+						s
+								<< "4 4 -0.2011   -0.9796    0.0097 0  0.4142   -0.0940   -0.9054 0  0.8878   -0.1780    0.4246 0 0 0 0 1";
 						Array2D<double> reverseMagicRotation;
 						s >> reverseMagicRotation;
-						world_transform = matmult(invert(world_to_camera), reverseMagicRotation);
+						world_transform = matmult(invert(world_to_camera),
+								reverseMagicRotation);
 						Array2D<double> O = Origin<double>();
 						Array2D<double> X = PlusX<double>();
 						O = matmult(world_transform, O);
@@ -652,7 +659,7 @@ int main(int argc, char* argv[]) {
 						Array2D<double> best_transform =
 								ViewContext::Get().Robot();
 						Array2D<double> camera_transform = matmult(
-								best_transform, _camera);
+								best_transform, robot_to_camera);
 						cout << " Raw pose: " << world_transform
 								<< "\n Camera_transform " << camera_transform;
 						//Whew, print this out
@@ -674,13 +681,20 @@ int main(int argc, char* argv[]) {
 //							indices.push_back(cv::Point2f(j, i));
 //						}
 //					}
-//					ViewContext::Get().Get3Dfrom2D(indices, map_pts);
-//					ofstream outfile("point.txt", ios::out);
-//					for(vector<cv::Point3f>::const_iterator i = map_pts.begin(); i != map_pts.end(); ++i) {
-//					    outfile << *i << '\n';
-//					}
-//					outfile.close();
+						ViewContext::Get().Get3Dfrom2D(indices, map_pts);
+						stringstream ss;
+						ss<<"point";
+						ss<<i;
+						ss<<".txt";
 
+						ofstream outfile(ss.str(), ios::out);
+						for (vector<cv::Point3f>::const_iterator i =
+								map_pts.begin(); i != map_pts.end(); ++i) {
+							outfile << *i << '\n';
+						}
+						outfile.close();
+						cvWaitKey(-1);
+						cvReleaseImage(&new_view);
 					}
 				}
 			}
@@ -697,7 +711,6 @@ int main(int argc, char* argv[]) {
 			 * Now we should output some debugging information.
 			 */
 			cout << "Best pose: " << extremes.first.pose() << endl;
-			cv::waitKey(-1);
 			cout
 					<< format(
 							"Weights: %05.6f (best) %05.6f (worst) %05.6f (ratio)")

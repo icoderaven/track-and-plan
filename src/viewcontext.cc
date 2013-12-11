@@ -370,23 +370,25 @@ void ViewContext::Get3Dfrom2D(std::vector<cv::Point2f> in_pts,
 		std::vector<cv::Point3f> &out_pts) {
 	//Clear out_pts
 	out_pts.clear();
+	GLfloat winX, winY, winZ;
+	GLint viewport[4];
+	GLdouble modelview[16];
+	GLdouble projection[16];
+	GLdouble posX, posY, posZ;
+
+	glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+	glGetDoublev(GL_PROJECTION_MATRIX, projection);
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	cout<<"ASDASDASDASD"<<viewport<<"\n"<<modelview<<"\n"<<projection;
 	//Essentially unproject the 2D points from the knowledge of transformation matrices that we use to render the current image
 	for (std::vector<cv::Point2f>::iterator it = in_pts.begin();
 			it != in_pts.end(); ++it) {
-		GLfloat winX, winY, winZ;
-		GLint viewport[4];
-		GLdouble modelview[16];
-		GLdouble projection[16];
-		GLdouble posX, posY, posZ;
-
-		glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
-		glGetDoublev(GL_PROJECTION_MATRIX, projection);
-		glGetIntegerv(GL_VIEWPORT, viewport);
 
 		winX = (float) it->x;
 		winY = (float) viewport[3] - (float) it->y;
 		//we need depth values
-		glReadPixels(int(winX), int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
+		glReadPixels(int(winX), int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT,
+				&winZ);
 
 		gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX,
 				&posY, &posZ);
