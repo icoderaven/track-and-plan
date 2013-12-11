@@ -633,7 +633,6 @@ PlusZ	viewcontext.cc	/^		ViewContext::Get().GenericTranslate(PlusZ<double>(), -1
 PlusZ	viewcontext.cc	/^		ViewContext::Get().GenericTranslate(PlusZ<double>(), -10);$/;"	p	file:
 PlusZ	viewcontext.cc	/^		ViewContext::Get().GenericTranslate(PlusZ<double>(), 1);$/;"	p	file:
 PlusZ	viewcontext.cc	/^		ViewContext::Get().GenericTranslate(PlusZ<double>(), 10);$/;"	p	file:
-Point2f	localization.cc	/^								indices.push_back(cv::Point2f(j, i));$/;"	p	file:
 Pose	extract_trajectory.cc	/^      actions.push_back(Pose(SCALE * x, SCALE * y, z0, t));$/;"	p	file:
 Pose	extract_trajectory.cc	/^  actions.push_back(Pose(x0, y0, z0, offset));$/;"	p	file:
 Pose	find_one.cc	/^    ViewContext::Get().SetPose(Pose(x0, y0, z0, radians(51)));$/;"	p	file:
@@ -1448,7 +1447,6 @@ _b	barecell.hh	/^      vector<double> _b;$/;"	m	class:textured_localization::Bar
 _bayer_type	bayer.hh	/^      int _bayer_type;$/;"	m	class:bayer::OpenCVInterpolation	access:private
 _best_pose	sensormodels.hh	/^	Pose _best_pose;$/;"	m	class:textured_localization::BestOrientationSensorModel	access:private
 _bucketsize	sensormodels.hh	/^	int _bucketsize;$/;"	m	class:textured_localization::MutualInformationSensorModel	access:private
-_camera	localization.cc	/^						Array2D<double> _camera = ViewContext::Get().Camera();$/;"	l
 _camera	viewcontext.cc	/^		camstream >> _camera;$/;"	l
 _camera	viewcontext.hh	/^      Array2D<double> _camera;$/;"	m	class:textured_localization::ViewContext	access:private
 _cameraMatrix	localization.cc	/^						cout<<_cameraMatrix;$/;"	l
@@ -1782,7 +1780,7 @@ cv::KeyPoint::convert	localization.cc	/^					cv::KeyPoint::convert(keypoints_2, 
 cv::Rodrigues	localization.cc	/^						cv::Rodrigues(R_init, rvec);$/;"	p	class:cv	file:
 cv::Rodrigues	localization.cc	/^						cv::Rodrigues(rvec, R);$/;"	p	class:cv	file:
 cv::drawMatches	localization.cc	/^					cv::drawMatches(ref_gray2, keypoints_1, ref_read,$/;"	p	class:cv	file:
-cv::solvePnP	localization.cc	/^						cv::solvePnP(map_pts, indices, _cameraMatrix,$/;"	p	class:cv	file:
+cv::solvePnP	localization.cc	/^						cv::solvePnP(map_pts, ref_pts, _cameraMatrix,$/;"	p	class:cv	file:
 cvLoadImage	bit_variance.cc	/^    images.push_back(cvLoadImage(s.string().c_str(), CV_LOAD_IMAGE_GRAYSCALE));$/;"	p	file:
 cvnorm	sensormodels.cc	/^		double cvnorm = cvNorm(reference, reading, CV_L2, mask);$/;"	l
 d	TNT/jama_eig.h	/^      Real r,d;$/;"	l
@@ -2223,7 +2221,6 @@ ims	viewmapslices.cc	/^vector<CvMat*>* ims = NULL;$/;"	v
 in	color_conversion_test.cc	/^  IplImage* in = cvLoadImage(argv[2]);$/;"	l
 in	linearize.cc	/^  IplImage* in = cvLoadImage(argv[1]);$/;"	l
 index	sorted_viewer.cc	/^    int index;$/;"	l
-indices	localization.cc	/^						std::vector<cv::Point2f> indices;$/;"	l
 infile	pgm.cc	/^  FILE *infile;$/;"	l
 initialize	TNT/tnt_cmat.h	/^    void initialize(Subscript M, Subscript N)$/;"	f	class:TNT::Matrix	access:protected
 initialize	TNT/tnt_vec.h	/^    void initialize(Subscript N)$/;"	f	class:TNT::Vector	access:protected
@@ -3086,7 +3083,7 @@ solve	TNT/jama_lu.h	/^   Array1D<Real> solve (const Array1D<Real> &b) $/;"	f	cla
 solve	TNT/jama_lu.h	/^   Array2D<Real> solve (const Array2D<Real> &B) $/;"	f	class:JAMA::LU	access:public
 solve	TNT/jama_qr.h	/^   TNT::Array1D<Real> solve(const TNT::Array1D<Real> &b) const$/;"	f	class:JAMA::QR	access:public
 solve	TNT/jama_qr.h	/^   TNT::Array2D<Real> solve(const TNT::Array2D<Real> &B) const$/;"	f	class:JAMA::QR	access:public
-solvePnP	localization.cc	/^						cv::solvePnP(map_pts, indices, _cameraMatrix,$/;"	p	class:cv	file:
+solvePnP	localization.cc	/^						cv::solvePnP(map_pts, ref_pts, _cameraMatrix,$/;"	p	class:cv	file:
 sp	TNT/jama_svd.h	/^               Real sp = s[p-1]\/scale;$/;"	l
 sparsemap	heatmap.cc	/^  SparseMap sparsemap(map);$/;"	p	file:
 sparsemap	heatmap_rotation.cc	/^  SparseMap sparsemap(map);$/;"	p	file:

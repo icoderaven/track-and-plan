@@ -554,13 +554,13 @@ int main(int argc, char* argv[]) {
 						cv::Mat rvec;
 						//@todo use current pose estimate to speed things up/optimize
 						//cv::Mat cam = "0.9795 0.0940 0.1780 85.8394 -0.0097 0.9053 -0.4246 -33.9370 -0.2010 0.4141 0.8877 138.1021 0 0 0 1";
-						std::vector<cv::Point2f> indices;
-						for (int i = 0; i < ref_gray2->height; i++) {
-							for (int j = 0; j < ref_gray2->width; j++) {
-								indices.push_back(cv::Point2f(j, i));
-							}
-						}
-						Array2D<double> _camera = ViewContext::Get().Camera();
+//						std::vector<cv::Point2f> indices;
+//						for (int i = 0; i < ref_gray2->height; i++) {
+//							for (int j = 0; j < ref_gray2->width; j++) {
+//								indices.push_back(cv::Point2f(j, i));
+//							}
+//						}
+//						Array2D<double> _camera = ViewContext::Get().Camera();
 //						Array2D<double> _camera(4, 4);
 //						stringstream camstream(config["robot_cam"]);
 //						camstream >> _camera;
@@ -599,13 +599,17 @@ int main(int argc, char* argv[]) {
 						cout << "\n\n\n\n";
 						cv::Rodrigues(R_init, rvec);
 
-						ViewContext::Get().Get3Dfrom2D(indices, map_pts);
+						ViewContext::Get().Get3Dfrom2D(ren_pts, map_pts);
 
 						_cameraMatrix.at<double>(2,2) = _cameraMatrix.at<double>(2,2)/SCALEFACTOR;
 
 						_cameraMatrix = _cameraMatrix/_cameraMatrix.at<double>(2,2);
 						cout<<_cameraMatrix;
-						cv::solvePnP(map_pts, indices, _cameraMatrix,
+
+						/**********
+						 * SOLVEPNP
+						 */
+						cv::solvePnP(map_pts, ref_pts, _cameraMatrix,
 								_distCoeffs, rvec, tvec, true, CV_EPNP);
 
 						cv::Mat R;
